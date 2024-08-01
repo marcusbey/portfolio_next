@@ -7,16 +7,16 @@ export const navItems = [
     name: "Projects",
     link: "/projects",
   },
-  {
-    name: "Events",
-    link: "/events",
-  },
-  {
-    name: "Blogs",
-    link: "/blogs",
-  },
-  {
-    name: "Medias",
-    link: "/medias",
-  },
+  // {
+  //   name: "Events",
+  //   link: "/events",
+  // },
+  // {
+  //   name: "Blogs",
+  //   link: "/blogs",
+  // },
+  // {
+  //   name: "Medias",
+  //   link: "/medias",
+  // },
 ];
