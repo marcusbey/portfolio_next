@@ -2,17 +2,17 @@ import { stack } from "./stack";
 
 export const projects = [
   {
-    title: "Algochurn",
+    title: "Nownownow",
     description:
-      "A web app that allows users to practice for front-end and UI interviews.",
+      "A web application to help you update your website from your mobile and connect with your visitors from anywhere.",
     image: "/images/projects/nownownow.gif",
     stack: [stack.nextjs, stack.tailwindcss, stack.typescript, stack.react],
     link: "https://nownownow.io",
   },
   {
-    title: "Aceternity",
+    title: "Compozit",
     description:
-      "A web design and development agency that gets the job done. Somehow.",
+      "An AI Powered plateform that give property developers a super power and save them money and time.",
     image: "/images/projects/compozit.png",
     stack: [stack.nextjs, stack.tailwindcss, stack.typescript, stack.react],
     link: "https://compozit.ca",

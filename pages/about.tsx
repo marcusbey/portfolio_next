@@ -39,7 +39,7 @@ export default function ProjectsPage() {
         <div>
           <h1 className="font-bold text-3xl md:text-5xl md:leading-tight text-zinc-50 max-w-3xl">
             Hey! I'm
-            <span className="text-cyan-500"> Tyler Durden</span> and I'm a full
+            <span className="text-cyan-500"> Romain BOBOE</span> and I'm a full
             stack soap engineer.
           </h1>
           <p className="text-zinc-400 text-sm md:text-base max-w-2xl mt-8 md:leading-loose tracking-wide">

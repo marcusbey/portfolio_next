@@ -53,8 +53,8 @@ export const Footer = () => {
           ))}
         </div>
         <p className="text-zinc-200 text-sm font-light text-center mt-8 border-t border-zinc-800 pt-4">
-          © {new Date().getFullYear()} Devpro Portfolio Template. All rights
-          reserved.
+          © {new Date().getFullYear()} Romain BOBOE Portfolio Template. All
+          rights reserved.
         </p>
         <div className="flex flex-row justify-center space-x-2 mt-2">
           {socials.map((socialLink: any, idx: number) => (

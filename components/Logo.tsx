@@ -27,7 +27,7 @@ export const Logo = ({
         className="rounded-full"
       />
       <span className={twMerge("font-inter font-bold", textClassName)}>
-        Tyler Durden
+        Romain BOBOE
       </span>
     </Link>
   );

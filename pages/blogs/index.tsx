@@ -11,7 +11,7 @@ import AllBlogs from "@/components/AllBlogs";
 
 export default function BlogsPage({ blogs }: any) {
   return (
-    <Container title={`Blogs | Tyler Durden`}>
+    <Container title={`Blogs | Romain BOBOE`}>
       <div className="max-w-5xl mx-auto px-8 mt-10 md:mt-20 relative ">
         <div>
           <h1 className="font-bold text-3xl md:text-5xl md:leading-tight text-zinc-50 max-w-3xl">

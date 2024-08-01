@@ -8,7 +8,7 @@ export const navItems = [
     link: "/projects",
   },
   {
-    name: "events",
+    name: "Events",
     link: "/events",
   },
   {
@@ -16,7 +16,7 @@ export const navItems = [
     link: "/blogs",
   },
   {
-    name: "medias",
+    name: "Medias",
     link: "/medias",
   },
 ];
