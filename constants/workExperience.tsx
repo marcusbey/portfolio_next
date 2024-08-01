@@ -1,11 +1,11 @@
 export const workExperience = [
   {
     company: "Compozit",
-    role: "Founder, Tech Lead, Solution Architect, Designer",
+    role: "Founder, FullStack Developr & Designer",
     startDate: "2023-09-01",
     endDate: "Present",
     description: [
-      "Developed an AI-powered application for land transformation.",
+      "Developed an AI-powered application to accelerate housing development processes in north america.",
       "Architected infrastructure using Docker, GitLab CI/CD, and Digital Ocean.",
       "Integrated backend with Flask and Python, and frontend with React and TypeScript.",
     ],
