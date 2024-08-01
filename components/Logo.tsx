@@ -23,7 +23,7 @@ export const Logo = ({
       <BlurImage
         width={30}
         height={30}
-        src={`/images/avatar.png`}
+        src={`/images/avatar.jpg`}
         className="rounded-full"
       />
       <span className={twMerge("font-inter font-bold", textClassName)}>

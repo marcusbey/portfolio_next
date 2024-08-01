@@ -53,7 +53,7 @@ export default function ProjectsPage() {
 
         <div className="order-first md:order-last">
           <Image
-            src={`/images/avatar.png`}
+            src={`/images/avatar.jpg`}
             width={200}
             height={200}
             alt="Avatar"

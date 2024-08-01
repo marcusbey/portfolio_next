@@ -8,15 +8,15 @@ export const navItems = [
     link: "/projects",
   },
   {
-    name: "Contributions",
-    link: "/contributions",
+    name: "events",
+    link: "/events",
   },
   {
     name: "Blogs",
     link: "/blogs",
   },
   {
-    name: "Events",
-    link: "/events",
+    name: "interests",
+    link: "/interests",
   },
 ];
