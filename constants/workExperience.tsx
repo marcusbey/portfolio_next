@@ -1,7 +1,7 @@
 export const workExperience = [
   {
     company: "Compozit",
-    role: "Founder, FullStack Developr & Designer",
+    role: "FullStack Developr & Designer",
     startDate: "2023-09-01",
     endDate: "Present",
     description: [
