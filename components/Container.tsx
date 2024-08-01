@@ -50,19 +50,19 @@ export const Container = (props: any) => {
 
       <main className={clsx("min-h-screen antialiased bg-zinc-900", className)}>
         <div className="bg-zinc-800 flex py-2">
-          <div className="mx-auto ">
+          <div className="mx-auto flex">
             <span className="sm:hidden md:inline">
-              I'm building this very fun website booster:{" "}
-            </span>
+              I'm building this very fun website booster:&nbsp;
+            </span>{" "}
             <a
               href="https://www.nownownow.io/"
               target="__blank"
               className="text-zinc-300 flex flex-row space-x-1 items-center text-sm"
             >
-              <span className="sm:hidden md:inline">Check it out!!</span>
+              <span className="sm:hidden md:inline"> Check it out!!</span>
               <span className="hidden sm-inline md:hidden">
                 Check this out!!
-              </span>{" "}
+              </span>
               <AiFillRightCircle className="inline-block" />
             </a>
           </div>

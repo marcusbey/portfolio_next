@@ -1,50 +1,58 @@
 export const timeline = [
   {
+    year: 2024,
+    points: [
+      "Founded Compozit, an AI-powered application transforming land research and property and development processes.",
+      "Established an Agile environment using Notion, boosting productivity and collaboration within the team significantly.",
+      "Architected and built the infrastructure using Docker, GitLab CI/CD pipelines, and Digital Ocean for seamless operations and scalability.",
+    ],
+  },
+  {
     year: 2023,
     points: [
-      "Building a new startup, this time it's going to be a big one",
-      "Started writing blogs as a daily habit. Won the nobel prize for literature",
-      "My brother went on to pursue a career in music, he's now a famous singer",
+      "Worked as a Senior Full Stack Developer at Bell, spearheading IP address allocation management applications.",
+      "Implemented a robust microservice architecture ensuring scalability, flexibility, and ease of maintenance.",
+      "Enhanced the user experience through Figma design improvements and efficient design workflows.",
     ],
   },
   {
     year: 2022,
     points: [
-      "Bought a new M2 chip macbook pro wow this is crazy!",
-      "Broke the chip as soon as I got it, had to buy a new one",
-      "Bought a new M2 chip macbook pro and started living on the streets.",
+      "Contributed as a Full-stack Developer to the Mozaik-Portail project at GRICS, enhancing teacher-student interactions.",
+      "Engineered reusable Vuetify components employing Test-Driven Development practices for high-quality code.",
+      "Delivered comprehensive Storybook documentation and actively participated in SCRUM sessions and Agile methodologies.",
     ],
   },
   {
     year: 2021,
     points: [
-      "Won the interstate merathon, died 4 times on the way.",
-      "Built a side project to help the people of my country win the war against covid",
-      "Started a podcast with my brother, we talk about the latest tech news",
+      "Developed and maintained event-focused websites at Le Journal de l'assurance, ensuring user-friendly interfaces.",
+      "Created dynamic sites for events, including registration, product purchases, and CRM integration for sponsors.",
+      "Implemented payment management logic using djStripe for seamless transactions and financial tracking.",
     ],
   },
   {
     year: 2020,
     points: [
-      "Back at it again, this time joined facebook as a software engineer",
-      "Went on to jump right in the metaverse, and joined Oculus as a software engineer",
-      "Champion of international tetris competition held between me and my brother",
+      "Worked as a Freelance FullStack Developer for TENDANCES MEDIA, on diverse projects and platforms.",
+      "Built laBelleRue, a desktop web application for real estate agencies using VueJS and Rails frameworks.",
+      "Maintained and added new features to planetoffinance.com, a financial social network for investors.",
     ],
   },
   {
-    year: 2019,
+    year: 2017,
     points: [
-      "Mid life crisis and decided to change career",
-      "Went on to do a Masters in Data Science",
-      "Ended up owning a farm and a small business",
+      "Attended the intensive coding bootcamp at Le Wagon Montreal, gaining comprehensive full-stack development skills.",
+      "Designed and shipped WASIS, a location-based web application, as part of the intensive program at Le Wagon.",
+      "Learned and applied a variety of technologies such as HTML, CSS, JavaScript, SQL, and Ruby on Rails.",
     ],
   },
   {
-    year: 2018,
+    year: 2015,
     points: [
-      "Graduate with a Bachelor of Mathematics",
-      "Graduate with a Bachelor of Computer Science",
-      "Graduate with a Bachelor of Statistics",
+      "Served as a Senior Architect at Ar.theme, working on major metro projects in Paris, France.",
+      "Developed detailed digital models using BIM/Revit during the advanced project design phase for metro stations.",
+      "Proposed innovative interior designs and modular parametric wall solutions for various metro station projects.",
     ],
   },
 ];
