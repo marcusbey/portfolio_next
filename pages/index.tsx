@@ -32,8 +32,9 @@ export default function Home({
       <h1 className="text-2xl md:text-3xl text-white font-bold max-w-5xl mx-auto px-8  mt-40">
         I've been building a lot of things
       </h1>
-
       <Projects />
+
+      {/* 
       <h1 className="text-2xl md:text-3xl text-white font-bold max-w-5xl mx-auto px-8 mt-40">
         Latest contributions to open source
       </h1>
@@ -44,7 +45,7 @@ export default function Home({
           <AllBlogs blogs={blogs} />
         </div>
         <Uses />
-      </div>
+      </div> */}
     </Container>
   );
 }

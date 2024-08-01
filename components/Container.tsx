@@ -12,12 +12,13 @@ export const Container = (props: any) => {
   const { children, className, ...customMeta } = props;
   const router = useRouter();
 
-  const title = "Devpro | Portfolio Template";
+  const title = "2omain 3030E | Portfolio";
   const meta = {
     title,
-    description: `A portfolio template for developers and designers.`,
+    description: `Welcome on my portfolio!`,
     type: "website",
-    image: "https://devpro.aceternity.com/banner.png",
+    image:
+      "https://pbs.twimg.com/profile_images/1233781055758512130/tpvF4g55_400x400.jpg",
     ...customMeta,
   };
 
@@ -36,12 +37,12 @@ export const Container = (props: any) => {
           href={`https://yourwebsite.com${router.asPath}`}
         />
         <meta property="og:type" content={meta.type} />
-        <meta property="og:site_name" content="yourwebsite" />
+        <meta property="og:site_name" content="Romain BOBOE" />
         <meta property="og:description" content={meta.description} />
         <meta property="og:title" content={meta.title} />
         <meta property="og:image" content={meta.image} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@yourwebsite" />
+        <meta name="twitter:site" content="@romainbey" />
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />

@@ -16,7 +16,7 @@ export const navItems = [
     link: "/blogs",
   },
   {
-    name: "interests",
-    link: "/interests",
+    name: "medias",
+    link: "/medias",
   },
 ];
