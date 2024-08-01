@@ -5,6 +5,8 @@ import {
   AiOutlineGithub,
   AiOutlineLinkedin,
   AiOutlineTwitter,
+  AiOutlineInstagram,
+  AiOutlineYoutube,
 } from "react-icons/ai";
 import { navItems } from "@/constants/navItems";
 import { Logo } from "./Logo";
@@ -12,13 +14,6 @@ import { user } from "@/constants/user";
 
 export const Footer = () => {
   const socials = [
-    {
-      name: "twitter",
-      icon: (
-        <AiOutlineTwitter className="h-5 w-5 hover:text-primary transition duration-150" />
-      ),
-      link: user.twitter,
-    },
     {
       name: "LinkedIn",
       icon: (
@@ -32,6 +27,27 @@ export const Footer = () => {
         <AiOutlineGithub className="h-5 w-5 hover:text-primary transition duration-150" />
       ),
       link: user.github,
+    },
+    {
+      name: "twitter",
+      icon: (
+        <AiOutlineTwitter className="h-5 w-5 hover:text-primary transition duration-150" />
+      ),
+      link: user.twitter,
+    },
+    {
+      name: "Youtube",
+      icon: (
+        <AiOutlineYoutube className="h-5 w-5 hover:text-primary transition duration-150" />
+      ),
+      link: user.youtube,
+    },
+    {
+      name: "Instagram",
+      icon: (
+        <AiOutlineInstagram className="h-5 w-5 hover:text-primary transition duration-150" />
+      ),
+      link: user.instagram,
     },
   ];
   return (
@@ -53,8 +69,7 @@ export const Footer = () => {
           ))}
         </div>
         <p className="text-zinc-200 text-sm font-light text-center mt-8 border-t border-zinc-800 pt-4">
-          © {new Date().getFullYear()} Romain BOBOE Portfolio Template. All
-          rights reserved.
+          © {new Date().getFullYear()} Romain BOBOE | All rights reserved.
         </p>
         <div className="flex flex-row justify-center space-x-2 mt-2">
           {socials.map((socialLink: any, idx: number) => (
