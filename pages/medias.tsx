@@ -12,7 +12,7 @@ import { user } from "@/constants/user";
 
 export default function Contributions({ repos }: { repos: Repository[] }) {
   return (
-    <Container title={`GitHub Contributions | Devpro`}>
+    <Container title={`GitHub Contributions | 2omain 3030Ξ`}>
       <div className="max-w-5xl mx-auto px-8 mt-10 md:mt-20 relative">
         <h1 className="font-bold text-3xl md:text-5xl md:leading-tight text-zinc-50 max-w-3xl">
           Committing Code and Crimes Against{" "}

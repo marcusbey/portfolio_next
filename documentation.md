@@ -1,4 +1,4 @@
-## Devpro Documentation
+## 2omain 3030Ξ Documentation
 
 To install the project
 
@@ -22,4 +22,4 @@ To fetch your latest repositories from GitHub, you need to create a GitHub Perso
 
 ## Reachout
 
-In case of any issues, you can reach out to me on [Twitter](https://twitter.com/mannupaaji) or my email address: aceternitysolutions@gmail.cpom
+In case of any issues, you can reach out to me on [Twitter](https://twitter.com/romainbey) or my email address: hi@romainboboe.com

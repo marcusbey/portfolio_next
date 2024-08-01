@@ -17,55 +17,6 @@ export const Hero = () => {
       </p>
 
       <div className="mt-8 text-zinc-400 text-sm md:text-base max-w-2xl leading-loose tracking-wide">
-        <h2 className="font-bold text-2xl text-zinc-50">A Dad Who Codes</h2>
-        <p>
-          When I'm not developing innovative solutions, I proudly wear the hat
-          of a dad. Balancing family life with my professional pursuits keeps me
-          grounded and inspired. My children remind me of the importance of
-          solving problems that matter, and I strive to create products that
-          genuinely make a difference.
-        </p>
-      </div>
-
-      <div className="mt-8 text-zinc-400 text-sm md:text-base max-w-2xl leading-loose tracking-wide">
-        <h2 className="font-bold text-2xl text-zinc-50">
-          AI and Fullstack Consulting
-        </h2>
-        <p>
-          As a consultant for AI-driven solutions and fullstack applications, I
-          help businesses leverage technology to achieve their goals. I'm
-          constantly learning and staying up-to-date with the latest
-          advancements to provide cutting-edge solutions. My journey in tech is
-          ever-evolving, and I’m excited about what the future holds.
-        </p>
-      </div>
-
-      <div className="mt-8 text-zinc-400 text-sm md:text-base max-w-2xl leading-loose tracking-wide">
-        <h2 className="font-bold text-2xl text-zinc-50">
-          Creating and Designing
-        </h2>
-        <p>
-          I'm passionate about building products that solve real problems.
-          Whether it's crafting beautiful websites or functional applications,
-          my aim is to design experiences that are intuitive and user-friendly.
-          Even with my busy schedule, I still find time to design, channeling my
-          architectural background into every project.
-        </p>
-      </div>
-
-      <div className="mt-8 text-zinc-400 text-sm md:text-base max-w-2xl leading-loose tracking-wide">
-        <h2 className="font-bold text-2xl text-zinc-50">
-          Nature and Adventure Enthusiast
-        </h2>
-        <p>
-          Outside the tech world, you'll find me embracing nature and seeking
-          adventure. Whether it's hiking through the woods or exploring new
-          landscapes, I find inspiration in the great outdoors. This love for
-          nature fuels my creativity and keeps my spirit adventurous.
-        </p>
-      </div>
-
-      <div className="mt-8 text-zinc-400 text-sm md:text-base max-w-2xl leading-loose tracking-wide">
         <p>
           Building{" "}
           <LinkPreview

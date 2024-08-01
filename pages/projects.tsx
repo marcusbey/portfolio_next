@@ -3,7 +3,7 @@ import { Projects } from "@/components/Projects";
 
 export default function ProjectsPage() {
   return (
-    <Container title={`Projects | Devpro`}>
+    <Container title={`Projects | 2omain 3030Ξ`}>
       <div className="max-w-5xl mx-auto px-8 mt-10 md:mt-20 relative">
         <h1 className="font-bold text-3xl md:text-5xl md:leading-tight text-zinc-50 max-w-3xl">
           I've been building a
