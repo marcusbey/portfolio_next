@@ -2,7 +2,7 @@ export const timeline = [
   {
     year: 2024,
     points: [
-      "Founded Compozit, an AI-powered application transforming land research and property and development processes.",
+      "Built Compozit from scratch: an AI-powered application transforming land research and property and development processes.",
       "Established an Agile environment using Notion, boosting productivity and collaboration within the team significantly.",
       "Architected and built the infrastructure using Docker, GitLab CI/CD pipelines, and Digital Ocean for seamless operations and scalability.",
     ],
