@@ -14,7 +14,7 @@ export const workExperience = [
   },
   {
     company: "Bell",
-    role: "Senior Full Stack Developer & Application Architect",
+    role: "Senior FullStack Developer & Application Architect",
     startDate: "2023-01-01",
     endDate: "2023-09-01",
     description: [
@@ -27,7 +27,7 @@ export const workExperience = [
   },
   {
     company: "GRICS",
-    role: "Full-stack Developer",
+    role: "FullStack Developer",
     startDate: "2022-04-01",
     endDate: "2023-06-01",
     description: [
@@ -40,7 +40,7 @@ export const workExperience = [
   },
   {
     company: "Insurance Portal",
-    role: "FullStack Developer",
+    role: "FrontEnd Developer",
     startDate: "2021-06-01",
     endDate: "2022-05-01",
     description: [
