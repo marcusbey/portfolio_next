@@ -1,10 +1,7 @@
 import { projects } from "@/constants/projects";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import React, { useState } from "react";
-import { AiFillCode } from "react-icons/ai";
-
-import { HiOutlineCodeBracketSquare } from "react-icons/hi2";
+import { useState } from "react";
 
 import { BsTerminal } from "react-icons/bs";
 
@@ -17,6 +14,7 @@ export const Projects = () => {
         {projects.map((project, idx) => (
           <a
             href={project.link}
+            target="_blank"
             key={project?.link}
             className="relative group  block p-2"
             onMouseEnter={() => setHoveredIndex(idx)}
