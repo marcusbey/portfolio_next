@@ -23,6 +23,14 @@ export const projects = [
     description: "Affordable and Cost effective homes that are built to last.",
     image: "/images/projects/connexthomes.png",
     stack: [stack.nextjs, stack.tailwindcss, stack.typescript, stack.react],
-    link: "https://connexthomes.com",
+    link: "https://connext-6cobb1edh-base-32.vercel.app/",
+  },
+  {
+    title: "BASE32",
+    description:
+      "Expert AI software development, automation solutions, and tech consulting.",
+    image: "/images/projects/base32tech.png",
+    stack: [stack.nextjs, stack.tailwindcss, stack.typescript, stack.react],
+    link: "https://base32tech.com",
   },
 ];
