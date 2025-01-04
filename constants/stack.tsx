@@ -1,5 +1,4 @@
 import {
-  TbBrandNextjs,
   TbBrandReact,
   TbBrandTailwind,
   TbBrandTypescript,
@@ -9,11 +8,6 @@ import {
 import { SiGo, SiRemix, SiPostgresql, SiResend } from "react-icons/si";
 
 export const stack = {
-  nextjs: {
-    name: "Next.js",
-    id: "nextjs",
-    icon: <TbBrandNextjs className="h-5 w-5 stroke-1" />,
-  },
   remix: {
     name: "Remix",
     id: "remix",
