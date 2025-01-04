@@ -33,4 +33,12 @@ export const projects = [
     stack: [stack.nextjs, stack.tailwindcss, stack.typescript, stack.react],
     link: "https://base32tech.com",
   },
+  {
+    title: "RemoteJungle",
+    description:
+      "An exclusive community platform connecting visionary AI architects and builders. Features premium job board, AI project repository, and expert network for artificial intelligence professionals.",
+    image: "/images/projects/remotejungle.png",
+    stack: [stack.nextjs, stack.tailwindcss, stack.typescript, stack.react],
+    link: "https://remotejungle.com",
+  },
 ];
