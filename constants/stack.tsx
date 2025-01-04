@@ -4,11 +4,12 @@ import {
   SiTypescript,
   SiVercel,
   SiDocker,
-  SiGolang,
+  SiGo,
   SiRemix,
   SiPostgresql,
-  SiResend,
 } from "react-icons/si";
+
+import { HiMail } from "react-icons/hi";
 
 export const stack = {
   remix: {
@@ -19,7 +20,7 @@ export const stack = {
   golang: {
     name: "Golang",
     id: "golang",
-    icon: <SiGolang className="h-5 w-5" />,
+    icon: <SiGo className="h-5 w-5" />,
   },
   vercel: {
     name: "Vercel",
@@ -34,7 +35,7 @@ export const stack = {
   resend: {
     name: "Resend",
     id: "resend",
-    icon: <SiResend className="h-5 w-5" />,
+    icon: <HiMail className="h-5 w-5" />,
   },
   docker: {
     name: "Docker",
