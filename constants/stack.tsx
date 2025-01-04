@@ -7,11 +7,17 @@ import {
   SiGo,
   SiRemix,
   SiPostgresql,
+  SiNextdotjs,
 } from "react-icons/si";
 
 import { HiMail } from "react-icons/hi";
 
 export const stack = {
+  nextjs: {
+    name: "Next.js",
+    id: "nextjs",
+    icon: <SiNextdotjs className="h-5 w-5" />,
+  },
   remix: {
     name: "Remix",
     id: "remix",
