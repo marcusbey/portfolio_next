@@ -4,8 +4,9 @@ import {
   TbBrandTailwind,
   TbBrandTypescript,
   TbBrandVercel,
+  TbBrandDocker,
 } from "react-icons/tb";
-import { SiGo, SiRemix } from "react-icons/si";
+import { SiGo, SiRemix, SiPostgresql, SiResend } from "react-icons/si";
 
 export const stack = {
   nextjs: {
@@ -27,6 +28,21 @@ export const stack = {
     name: "Vercel",
     id: "vercel",
     icon: <TbBrandVercel className="h-5 w-5 stroke-1" />,
+  },
+  postgres: {
+    name: "PostgreSQL",
+    id: "postgres",
+    icon: <SiPostgresql className="h-5 w-5 stroke-1" />,
+  },
+  resend: {
+    name: "Resend",
+    id: "resend",
+    icon: <SiResend className="h-5 w-5 stroke-1" />,
+  },
+  docker: {
+    name: "Docker",
+    id: "docker",
+    icon: <TbBrandDocker className="h-5 w-5 stroke-1" />,
   },
   tailwindcss: {
     name: "Tailwind CSS",
