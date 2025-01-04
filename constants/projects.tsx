@@ -39,6 +39,14 @@ export const projects = [
       "An exclusive community platform connecting visionary AI architects and builders. Features premium job board, AI project repository, and expert network for artificial intelligence professionals.",
     image: "/images/projects/remotejungle.png",
     stack: [stack.nextjs, stack.tailwindcss, stack.typescript, stack.react],
-    link: "https://remotejungle.com",
+    link: "https://remotejungle.ai",
+  },
+  {
+    title: "Moood",
+    description:
+      "AI-powered language learning assistant that works through WhatsApp. Practice your language skills with Greg or Clara, AI coaches available anytime - no extra apps needed, just chat and learn.",
+    image: "/images/projects/moood.png",
+    stack: [stack.nextjs, stack.tailwindcss, stack.typescript, stack.react],
+    link: "https://moood.ai",
   },
 ];
