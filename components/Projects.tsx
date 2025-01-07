@@ -45,7 +45,9 @@ export const Projects = () => {
                     src={project.image}
                     alt={project.title}
                     fill
-                    className=" absolute inset-0 object-cover object-center  mix-blend-multiply"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={idx === 0}
+                    className="absolute inset-0 object-cover object-center mix-blend-multiply"
                   />
                 </div>
                 <div className="p-4">
