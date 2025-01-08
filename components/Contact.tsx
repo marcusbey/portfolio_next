@@ -50,10 +50,10 @@ export const Contact = () => {
 
   const handleSubmit = async () => {
     let { email, message } = formState;
-    console.log("email", email, "message", message);
     let updatedState = { ...formState };
     let regex =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    
     if (!email.value) {
       updatedState.email.error = `Oops! Email cannot be empty.`;
       setFormState({ ...updatedState });
@@ -65,14 +65,46 @@ export const Contact = () => {
       setFormState({ ...updatedState });
       return;
     }
+    
     if (!message.value) {
       updatedState.message.error = `Oops! Message cannot be empty.`;
       setFormState({ ...updatedState });
       return;
     }
-    // Everything is fine - Proceed with the API call.
 
-    // Your API Call goes here
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email.value,
+          message: message.value,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong');
+      }
+
+      setSuccess('Message sent successfully! I\'ll get back to you soon. 🚀');
+      setFormState({
+        email: { value: '', error: '' },
+        message: { value: '', error: '' },
+      });
+    } catch (err) {
+      setError('Failed to send message. Please try again later.');
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleButtonClick = () => {
