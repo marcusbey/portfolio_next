@@ -18,12 +18,50 @@ export default async function handler(
       from: 'Contact Form <onboarding@resend.dev>',
       to: 'hi@romainboboe.com',
       reply_to: email,
-      subject: 'New Contact Form Submission',
+      subject: '💌 New Message from RomainBOBOE.com',
       html: `
-        <h2>New message from your website contact form</h2>
-        <p><strong>From:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { background-color: #1f2937; color: white; padding: 20px; border-radius: 8px; }
+              .content { background-color: #f9fafb; padding: 20px; border-radius: 8px; margin-top: 20px; }
+              .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 0.875rem; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1 style="margin: 0;">New Message from Your Website</h1>
+              </div>
+              <div class="content">
+                <p>Hello Romain,</p>
+                <p>You've received a new message from your website contact form.</p>
+                
+                <h2 style="color: #1f2937;">Sender Details</h2>
+                <p><strong>Email:</strong> ${email}</p>
+                
+                <h2 style="color: #1f2937;">Message</h2>
+                <p style="background: white; padding: 15px; border-radius: 4px; border: 1px solid #e5e7eb;">
+                  ${message.replace(/\n/g, '<br>')}
+                </p>
+                
+                <p style="margin-top: 20px;">
+                  To reply, you can either:
+                  <ul>
+                    <li>Use the reply-to address set in this email</li>
+                    <li>Click "Reply" in your email client</li>
+                  </ul>
+                </p>
+              </div>
+              <div class="footer">
+                <p>This message was sent from the contact form on RomainBOBOE.com</p>
+              </div>
+            </div>
+          </body>
+        </html>
       `,
     });
 
