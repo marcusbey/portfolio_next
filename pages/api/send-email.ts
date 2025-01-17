@@ -17,7 +17,7 @@ export default async function handler(
     const data = await resend.emails.send({
       from: 'Contact Form <onboarding@resend.dev>',
       to: 'hi@romainboboe.com',
-      reply_to: email,
+      replyTo: email,
       subject: '💌 New Message from RomainBOBOE.com',
       html: `
         <!DOCTYPE html>
