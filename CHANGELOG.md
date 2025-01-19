@@ -35,3 +35,8 @@
 - Generated favicons from profile picture
 - Updated SEO component with proper favicon meta tags
 - Added site.webmanifest for PWA support
+
+### fix: resolve image aspect ratio warnings
+- Added proper width and height attributes to company logo images
+- Added w-auto and h-auto classes to maintain aspect ratio
+- Fixed Next.js Image component warnings in Experience component
