@@ -40,3 +40,10 @@
 - Added proper width and height attributes to company logo images
 - Added w-auto and h-auto classes to maintain aspect ratio
 - Fixed Next.js Image component warnings in Experience component
+
+### fix: resolve moment.js date format warnings
+- Created dateFormatter utility for consistent date handling
+- Added proper date format validation
+- Fixed 'Present' date handling
+- Improved type safety for date formatting
+- Removed direct moment.js usage in components

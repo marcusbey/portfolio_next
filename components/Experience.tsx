@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useState } from "react";
 import Beam from "./Beam/Beam";
-import moment from "moment";
+import { formatDateRange } from "@/utils/dateFormatter";
 import { BsCheck2 } from "react-icons/bs";
 import Image from "next/image";
 
@@ -97,8 +97,10 @@ export const Experience = () => {
                 </h1>
 
                 <div className="text-zinc-400 text-sm tracking-widest">
-                  {moment(activeWorkExperience?.startDate).format("MMM YYYY")} -{" "}
-                  {moment(activeWorkExperience?.endDate).format("MMM YYYY")}
+                  {formatDateRange(
+                    activeWorkExperience?.startDate || '',
+                    activeWorkExperience?.endDate || ''
+                  )}
                 </div>
                 <p className="text-zinc-400 text-sm">
                   {activeWorkExperience?.location}
