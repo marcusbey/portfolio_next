@@ -9,36 +9,20 @@ interface ResendEmailResponse {
   error: Error | null;
 }
 
-// Enhanced environment variable checking
+// Environment variables
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const CONTACT_FORM_EMAIL = process.env.CONTACT_FORM_EMAIL;
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
-// Debug environment variables
-console.log('🔧 Environment Variables:', {
-  hasApiKey: !!RESEND_API_KEY,
-  apiKeyLength: RESEND_API_KEY?.length,
-  contactEmail: CONTACT_FORM_EMAIL,
-  apiUrl: API_URL,
-  nodeEnv: process.env.NODE_ENV
-});
-
-if (!RESEND_API_KEY) {
-  console.error('⚠️ RESEND_API_KEY is not set in environment variables');
-}
-
-if (!CONTACT_FORM_EMAIL) {
-  console.warn('⚠️ CONTACT_FORM_EMAIL is not set, falling back to default');
-}
-
-// Initialize Resend with error handling
+// Initialize Resend
 let resend: Resend;
 try {
+  if (!RESEND_API_KEY?.startsWith('re_')) {
+    throw new Error('Invalid API key format. Must start with "re_"');
+  }
   resend = new Resend(RESEND_API_KEY);
-  console.log('✅ Resend initialized successfully');
 } catch (error) {
-  console.error('❌ Failed to initialize Resend:', error);
   resend = new Resend(''); // Fallback to empty key for type safety
 }
 
@@ -46,14 +30,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log('🔍 API Route Environment:', {
-    nodeEnv: process.env.NODE_ENV,
-    hasApiKey: !!RESEND_API_KEY,
-    recipientEmail: CONTACT_FORM_EMAIL || 'hi@romainboboe.com',
-    apiUrl: API_URL,
-    isDevelopment: IS_DEVELOPMENT
-  });
-
   // Set CORS headers for development
   const origin = req.headers.origin || '';
   const allowedOrigins = [API_URL, 'http://localhost:3000'];
@@ -75,23 +51,12 @@ export default async function handler(
 
   try {
     const { email, message } = req.body;
-    
-    console.log('📨 Received request:', {
-      hasEmail: !!email,
-      emailLength: email?.length,
-      hasMessage: !!message,
-      messageLength: message?.length,
-      timestamp: new Date().toISOString(),
-      origin: req.headers.origin
-    });
 
     if (!email || !message) {
-      console.error('❌ Missing required fields:', { email: !!email, message: !!message });
       return res.status(400).json({ message: 'Email and message are required' });
     }
 
     if (!RESEND_API_KEY) {
-      console.error('❌ Cannot send email: RESEND_API_KEY is missing');
       return res.status(500).json({ 
         message: 'Email service configuration error',
         details: 'API key is missing'
@@ -99,13 +64,12 @@ export default async function handler(
     }
 
     const recipientEmail = CONTACT_FORM_EMAIL || 'hi@romainboboe.com';
-    console.log('📧 Attempting to send email to:', recipientEmail);
 
     const emailData = {
       from: 'Contact Form <onboarding@resend.dev>',
       to: recipientEmail,
       replyTo: email,
-      subject: '💌 New Message from RomainBOBOE.com',
+      subject: 'New Message from RomainBOBOE.com',
       html: `
         <!DOCTYPE html>
         <html>
@@ -152,15 +116,8 @@ export default async function handler(
       `
     };
 
-    console.log('📤 Sending email with data:', {
-      to: recipientEmail,
-      replyTo: email,
-      timestamp: new Date().toISOString()
-    });
-
     try {
       const response = await resend.emails.send(emailData) as ResendEmailResponse;
-      console.log('📬 Raw Resend Response:', response);
       
       if (response.error) {
         throw new Error(`Resend API Error: ${response.error.message}`);
@@ -170,38 +127,20 @@ export default async function handler(
         throw new Error('No email ID returned from Resend');
       }
       
-      console.log('✅ Email sent successfully:', {
-        id: response.data.id,
-        timestamp: new Date().toISOString()
-      });
-      
       return res.status(200).json({
         success: true,
         message: 'Email sent successfully',
         id: response.data.id
       });
     } catch (sendError: any) {
-      console.error('❌ Resend API Error:', {
-        error: sendError.message,
-        stack: sendError.stack,
-        timestamp: new Date().toISOString()
-      });
-      
       throw new Error(`Failed to send email via Resend: ${sendError.message}`);
     }
 
   } catch (error: any) {
-    console.error('❌ Failed to send email:', {
-      error: error.message,
-      stack: error.stack,
-      timestamp: new Date().toISOString()
-    });
-    
     return res.status(500).json({
       success: false,
       message: 'Failed to send email',
-      error: error.message,
-      timestamp: new Date().toISOString()
+      error: error.message
     });
   }
 }

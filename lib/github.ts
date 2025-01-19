@@ -29,7 +29,6 @@ export const getUserRepositories = async (username: string) => {
 
       return data;
     } catch (error) {
-      console.log(error);
       return null;
     }
   } else {
@@ -41,7 +40,6 @@ export const getUserRepositories = async (username: string) => {
 
       return data;
     } catch (error) {
-      console.log(error);
       return null;
     }
   }

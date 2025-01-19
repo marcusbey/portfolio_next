@@ -12,7 +12,6 @@ async function prepareFavicon() {
       .resize(512, 512)
       .toFormat('png')
       .toFile(faviconSourcePath);
-    console.log('Created favicon source from avatar');
   }
   
   // Create output directory if it doesn't exist
@@ -40,7 +39,6 @@ async function prepareFavicon() {
     await sharp(faviconSourcePath)
       .resize(size, size)
       .toFile(path.join(outputDir, filename));
-    console.log(`Generated ${filename}`);
   }
 
   // Generate ICO file (supports multiple sizes)
@@ -48,8 +46,6 @@ async function prepareFavicon() {
     .resize(32, 32)
     .toFile(path.join(outputDir, 'favicon.ico'));
   
-  console.log('Generated favicon.ico');
-
   // Generate site.webmanifest
   const manifest = {
     name: 'Romain BOBOE',
@@ -75,7 +71,6 @@ async function prepareFavicon() {
     path.join(outputDir, 'site.webmanifest'),
     JSON.stringify(manifest, null, 2)
   );
-  console.log('Generated site.webmanifest');
 }
 
 prepareFavicon().catch(console.error);
