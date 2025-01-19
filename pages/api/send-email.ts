@@ -48,12 +48,12 @@ const resend = (() => {
 })();
 
 const getEmailConfig = (senderEmail: string) => ({
-  from: `Romain BOBOE ${config.isDevelopment ? '(Dev)' : ''} <${
-    config.isDevelopment ? 'onboarding@resend.dev' : 'email@romainboboe.com'
-  }>`,
+  from: config.isDevelopment 
+    ? 'onboarding@resend.dev'
+    : senderEmail,
   to: config.isDevelopment ? config.devEmail : config.contactEmail,
   replyTo: senderEmail,
-  subject: `${config.isDevelopment ? '[TEST] ' : ''}📨 New Message from RomainBOBOE.com`
+  subject: `${config.isDevelopment ? '[TEST] ' : ''}📨  New Message from RomainBOBOE.com`
 });
 
 const validateRequest = (email?: string, message?: string) => {
