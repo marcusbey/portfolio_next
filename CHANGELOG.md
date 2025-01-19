@@ -16,3 +16,9 @@
 - Added web app manifest for PWA support
 - Added robots.txt for search engine crawling
 - Implemented proper favicon handling
+
+### feat: add sitemap and favicon generation
+- Added automatic sitemap.xml generation
+- Created script for generating multiple favicon sizes
+- Updated build process to include sitemap and favicon generation
+- Added new npm scripts for manual generation
