@@ -77,7 +77,11 @@ export const Contact = () => {
     setSuccess(null);
 
     try {
-      const response = await fetch('/api/send-email', {
+      const baseUrl = process.env.NODE_ENV === 'development' 
+        ? 'http://localhost:3000' 
+        : process.env.NEXT_PUBLIC_SITE_URL || '';
+        
+      const response = await fetch(`${baseUrl}/api/send-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,20 +92,20 @@ export const Contact = () => {
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to send message');
       }
 
+      const data = await response.json();
       setSuccess('Message sent successfully! I\'ll get back to you soon. 🚀');
       setFormState({
         email: { value: '', error: '' },
         message: { value: '', error: '' },
       });
     } catch (err) {
-      setError('Failed to send message. Please try again later.');
       console.error('Error:', err);
+      setError('Failed to send message. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -123,6 +127,7 @@ export const Contact = () => {
     setError("");
     setSuccess("");
   };
+
   return (
     <AnimatePresence initial={false} onExitComplete={() => null}>
       <div className="fixed right-4 md:right-10 bottom-10 flex flex-col items-end z-[99999]">

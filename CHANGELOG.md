@@ -8,3 +8,4 @@
 - Added documentation for both email implementations
 
 ### docs: add RESEND_API_KEY to environment variables example
+### docs: update environment variables and recreate .env.example

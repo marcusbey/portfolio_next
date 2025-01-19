@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypePrism from "@mapbox/rehype-prism";
 
 const nextConfig = {
-  pageExtensions: ["tsx", "mdx"],
+  pageExtensions: ["tsx", "ts", "mdx"],
   reactStrictMode: true,
   images: {
     domains: [
@@ -15,6 +15,15 @@ const nextConfig = {
   experimental: {
     newNextLinkBehavior: true,
     scrollRestoration: true,
+  },
+  // Ensure API routes are properly handled
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/:path*',
+      },
+    ];
   },
 };
 

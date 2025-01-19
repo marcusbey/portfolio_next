@@ -1,20 +1,40 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Resend } from 'resend';
 
+// Log the API key presence (not the actual key)
+console.log('API Key present:', !!process.env.RESEND_API_KEY);
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
   try {
     const { email, message } = req.body;
+    
+    // Log the request body (for debugging)
+    console.log('Received email request:', { email: email ? 'present' : 'missing', message: message ? 'present' : 'missing' });
 
-    const data = await resend.emails.send({
+    if (!email || !message) {
+      return res.status(400).json({ message: 'Email and message are required' });
+    }
+
+    const emailData = {
       from: 'Contact Form <onboarding@resend.dev>',
       to: 'hi@romainboboe.com',
       replyTo: email,
@@ -62,12 +82,26 @@ export default async function handler(
             </div>
           </body>
         </html>
-      `,
+      `
+    };
+
+    const data = await resend.emails.send(emailData);
+    console.log('Email sent successfully:', data);
+    
+    // Return a proper JSON response
+    return res.status(200).json({
+      success: true,
+      message: 'Email sent successfully',
+      id: data.id
     });
 
-    return res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
     console.error('Error sending email:', error);
-    return res.status(500).json({ message: 'Error sending email' });
+    // Return a proper JSON response for errors
+    return res.status(500).json({ 
+      success: false,
+      message: 'Error sending email',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 }
