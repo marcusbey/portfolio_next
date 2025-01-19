@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { Resend, CreateEmailResponse } from 'resend';
 import { EmailTemplate } from '@/components/email-template';
 
@@ -12,6 +12,11 @@ interface ApiResponse {
   message: string;
   id?: string;
   error?: string;
+  email: string | null;
+  details?: {
+    email: string | null;
+    message: string | null;
+  };
 }
 
 // Environment configuration
@@ -21,7 +26,13 @@ const config = {
   devEmail: 'rboboe@gmail.com',
   apiUrl: process.env.NEXT_PUBLIC_API_URL || 'https://www.romainboboe.com',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.romainboboe.com',
-  isDevelopment: process.env.NODE_ENV === 'development'
+  isDevelopment: process.env.NODE_ENV === 'development',
+  allowedOrigins: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://www.romainboboe.com',
+    'https://romainboboe.com'
+  ]
 } as const;
 
 // Initialize Resend client
@@ -74,80 +85,73 @@ const getEmailConfig = (senderEmail: string) => {
 // Validate email configuration
 const validateEmailConfig = () => {
   if (!config.contactEmail) {
-    throw new Error('CONTACT_FORM_EMAIL is required');
+    return 'CONTACT_FORM_EMAIL is required';
   }
   if (!config.contactEmail.includes('@')) {
-    throw new Error('CONTACT_FORM_EMAIL must be a valid email address');
+    return 'CONTACT_FORM_EMAIL must be a valid email address';
   }
+  return null;
 };
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ) {
+  // Handle CORS
+  const origin = req.headers.origin as typeof config.allowedOrigins[number] | undefined;
+  if (origin && config.allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   // Handle preflight request
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(200).end();
   }
 
-  // Only allow POST requests
   if (req.method !== 'POST') {
-    return res.status(405).json({
+    return res.status(405).json({ 
       success: false,
-      message: 'Method not allowed'
-    });
-  }
-
-  // Only allow requests from www subdomain in production
-  if (!config.isDevelopment && req.headers.host !== 'www.romainboboe.com') {
-    console.warn('Invalid host:', req.headers.host);
-    return res.status(400).json({
-      success: false,
-      message: 'Invalid host',
-      error: 'Request must come from www.romainboboe.com'
-    });
-  }
-
-  // Set CORS headers
-  const origin = req.headers.origin || '';
-  const allowedOrigins = [
-    'https://www.romainboboe.com',
-    'http://localhost:3000'
-  ];
-
-  if (allowedOrigins.includes(origin) || config.isDevelopment) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else {
-    res.setHeader('Access-Control-Allow-Origin', 'https://www.romainboboe.com');
-  }
-  
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Validate Resend client
-  if (!resend) {
-    return res.status(500).json({
-      success: false,
-      message: 'Email service not initialized',
-      error: 'Failed to initialize Resend client'
+      message: 'Method not allowed',
+      error: 'Method not allowed',
+      email: null,
+      details: {
+        email: null,
+        message: null
+      }
     });
   }
 
   try {
-    // Validate email configuration early
-    validateEmailConfig();
-
     const { email, message } = req.body as EmailRequest;
 
-    // Validate request body
     if (!email || !message) {
-      return res.status(400).json({
+      return res.status(400).json({ 
         success: false,
         message: 'Missing required fields',
-        error: 'Email and message are required'
+        error: 'Missing required fields',
+        email: null,
+        details: {
+          email: !email ? 'Email is required' : null,
+          message: !message ? 'Message is required' : null
+        }
+      });
+    }
+
+    // Validate email configuration
+    const validationError = validateEmailConfig();
+    if (validationError) {
+      console.error('Email configuration error:', validationError);
+      return res.status(500).json({ 
+        success: false,
+        message: 'Email configuration error',
+        error: validationError,
+        email: null,
+        details: {
+          email: null,
+          message: null
+        }
       });
     }
 
@@ -170,46 +174,56 @@ export default async function handler(
       replyTo: emailConfig.replyTo,
       subject: emailConfig.subject
     });
-    
-    console.log('Sending email with config:', {
-      ...emailConfig,
-      message: message.substring(0, 100) + '...' // Only log first 100 chars
-    });
-    
+
+    if (!resend) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to initialize email client',
+        error: 'Email client initialization failed',
+        email: null,
+        details: {
+          email: null,
+          message: null
+        }
+      });
+    }
+
     const result: CreateEmailResponse = await resend.emails.send({
       from: emailConfig.from,
       to: emailConfig.to as string,
       subject: emailConfig.subject,
       replyTo: emailConfig.replyTo,
-      react: EmailTemplate({ senderEmail: email, message }) // Use React component
+      react: EmailTemplate({ senderEmail: email, message })
     });
 
     console.log('Resend API response:', JSON.stringify(result, null, 2));
 
-    // Debug logging
-    console.log('Email API response:', result);
-
-    // Type guard to check if result is an error
-    if ('error' in result && result.error) {
-      throw new Error(result.error.message || 'Failed to send email');
+    if (result.error) {
+      throw new Error(result.error.message);
     }
 
-    if (!result.data) {
-      throw new Error('No response data from email service');
-    }
-
-    return res.status(200).json({
+    return res.status(200).json({ 
       success: true,
       message: 'Email sent successfully',
-      id: result.data.id
+      id: result.data?.id,
+      email: email,
+      details: {
+        email: null,
+        message: null
+      }
     });
-  } catch (error) {
+
+  } catch (error: any) {
     console.error('Failed to send email:', error);
-    
-    return res.status(500).json({
+    return res.status(500).json({ 
       success: false,
       message: 'Failed to send email',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error.message,
+      email: null,
+      details: {
+        email: null,
+        message: null
+      }
     });
   }
 }
