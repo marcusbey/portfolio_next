@@ -49,17 +49,27 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log('Received request:', {
+  console.log('=== Email API Handler Start ===');
+  console.log('Request details:', {
     method: req.method,
-    headers: req.headers,
-    body: req.body
+    url: req.url,
+    headers: {
+      host: req.headers.host,
+      origin: req.headers.origin,
+      referer: req.headers.referer
+    }
   });
 
-  // Set CORS headers for development
+  // Set CORS headers
   const origin = req.headers.origin || '';
-  const allowedOrigins = [API_URL, 'http://localhost:3000'];
+  const allowedOrigins = [
+    'https://romainboboe.com',
+    'https://www.romainboboe.com',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ];
   
-  if (IS_DEVELOPMENT || allowedOrigins.includes(origin)) {
+  if (allowedOrigins.includes(origin) || IS_DEVELOPMENT) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -71,11 +81,16 @@ export default async function handler(
   }
 
   if (req.method !== 'POST') {
+    console.log('Method not allowed:', req.method);
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
   if (!resend) {
-    console.error('Resend client not initialized');
+    console.error('Resend client not initialized', {
+      apiKeySet: !!RESEND_API_KEY,
+      apiKeyValid: RESEND_API_KEY?.startsWith('re_'),
+      environment: process.env.NODE_ENV
+    });
     return res.status(500).json({
       success: false,
       message: 'Email service not initialized',
@@ -88,12 +103,15 @@ export default async function handler(
     const { email, message } = req.body;
 
     if (!email || !message) {
-      console.error('Missing required fields:', { email: !!email, message: !!message });
+      console.error('Missing required fields:', { 
+        emailProvided: !!email, 
+        messageProvided: !!message 
+      });
       return res.status(400).json({ message: 'Email and message are required' });
     }
 
     if (!CONTACT_FORM_EMAIL) {
-      console.error('CONTACT_FORM_EMAIL is missing in environment:', { 
+      console.error('Missing CONTACT_FORM_EMAIL in environment:', { 
         CONTACT_FORM_EMAIL_SET: !!CONTACT_FORM_EMAIL,
         IS_DEVELOPMENT,
         NODE_ENV: process.env.NODE_ENV
@@ -129,7 +147,8 @@ export default async function handler(
       toEmail,
       SITE_URL,
       API_URL,
-      NODE_ENV: process.env.NODE_ENV
+      NODE_ENV: process.env.NODE_ENV,
+      host: req.headers.host
     });
 
     const emailData = {
@@ -184,6 +203,7 @@ export default async function handler(
               <div class="footer">
                 <p>This message was sent from the contact form on RomainBOBOE.com</p>
                 ${IS_DEVELOPMENT ? '<p style="color: #92400e;">Note: In development mode, emails are only sent to verified addresses.</p>' : ''}
+                <p style="color: #6b7280; font-size: 0.75rem;">Sent from ${req.headers.host || SITE_URL}</p>
               </div>
             </div>
           </body>
@@ -201,40 +221,48 @@ export default async function handler(
       isDevelopment: IS_DEVELOPMENT,
       resendInitialized: !!resend,
       siteUrl: SITE_URL,
-      apiUrl: API_URL
+      apiUrl: API_URL,
+      host: req.headers.host,
+      origin: req.headers.origin
     });
 
-    const result = await resend.emails.send(emailData);
-    console.log('Resend API Full Response:', JSON.stringify(result, null, 2));
+    try {
+      const result = await resend.emails.send(emailData);
+      console.log('Resend API Full Response:', JSON.stringify(result, null, 2));
 
-    if (result.error) {
-      console.error('Resend API Error:', {
-        error: result.error,
-        errorMessage: result.error.message,
-        errorName: result.error.name,
+      if (result.error) {
+        throw result.error;
+      }
+
+      console.log('Email sent successfully:', {
+        id: result.data?.id,
+        to: emailData.to,
+        from: emailData.from,
+        environment: process.env.NODE_ENV
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Email sent successfully',
+        id: result.data?.id
+      });
+    } catch (error) {
+      console.error('Failed to send email:', {
+        error,
         environment: process.env.NODE_ENV,
         isDevelopment: IS_DEVELOPMENT,
-        fromEmail,
-        toEmail
+        fromEmail: emailData.from,
+        toEmail: emailData.to,
+        host: req.headers.host,
+        origin: req.headers.origin
       });
+
       return res.status(500).json({
         success: false,
         message: 'Failed to send email',
-        error: result.error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
-
-    console.log('Email sent successfully:', {
-      id: result.data?.id,
-      to: recipientEmail,
-      from: emailData.from
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: 'Email sent successfully',
-      id: result.data?.id
-    });
   } catch (error: any) {
     console.error('General error in API route:', error);
     return res.status(500).json({
