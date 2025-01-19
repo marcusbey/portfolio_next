@@ -22,3 +22,9 @@
 - Created script for generating multiple favicon sizes
 - Updated build process to include sitemap and favicon generation
 - Added new npm scripts for manual generation
+
+### feat: add Open Graph image generation
+- Added script to generate OG and Twitter card images from profile picture
+- Updated SEO component to use generated images
+- Added social media meta tags and keywords
+- Integrated OG image generation into build process

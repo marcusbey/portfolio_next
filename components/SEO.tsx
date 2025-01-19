@@ -11,12 +11,13 @@ interface SEOProps {
 export function SEO({
   title = "Romain BOBOE | Full Stack Developer",
   description = "Full Stack Developer specializing in building exceptional digital experiences. Currently focused on building accessible, human-centered products.",
-  image = "/og-image.png",
+  image = "/images/og/og-image.jpg",
   url = "https://romainboboe.com",
   type = "website",
 }: SEOProps) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://romainboboe.com";
   const canonicalUrl = url.startsWith("/") ? `${siteUrl}${url}` : url;
+  const ogImage = image.startsWith("/") ? `${siteUrl}${image}` : image;
   
   return (
     <Head>
@@ -39,14 +40,16 @@ export function SEO({
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={`${siteUrl}${image}`} />
+      <meta property="og:image" content={ogImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
 
       {/* Twitter */}
-      <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content={canonicalUrl} />
-      <meta property="twitter:title" content={title} />
-      <meta property="twitter:description" content={description} />
-      <meta property="twitter:image" content={`${siteUrl}${image}`} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content={canonicalUrl} />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={`${siteUrl}/images/og/twitter-card.jpg`} />
 
       {/* Canonical URL */}
       <link rel="canonical" href={canonicalUrl} />
@@ -58,6 +61,13 @@ export function SEO({
       <meta name="language" content="English" />
       <meta name="revisit-after" content="7 days" />
       <meta name="author" content="Romain BOBOE" />
+      
+      {/* Keywords */}
+      <meta name="keywords" content="Romain BOBOE, Full Stack Developer, Web Development, JavaScript, TypeScript, React, Node.js, Next.js, Software Engineer" />
+      
+      {/* Additional Social Media */}
+      <meta name="twitter:creator" content="@romainboboe" />
+      <meta property="og:site_name" content="Romain BOBOE" />
     </Head>
   );
 }

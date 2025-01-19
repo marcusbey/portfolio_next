@@ -11,7 +11,8 @@
     "test:watch": "jest --watch",
     "generate:sitemap": "node -r ts-node/register ./utils/generateSitemap.ts",
     "generate:favicons": "node ./scripts/generateFavicons.js",
-    "prebuild": "npm run generate:sitemap && npm run generate:favicons"
+    "generate:og": "node ./scripts/generateOgImages.js",
+    "prebuild": "npm run generate:sitemap && npm run generate:favicons && npm run generate:og"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.13",
