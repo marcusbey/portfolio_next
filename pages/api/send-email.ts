@@ -46,11 +46,20 @@ const resend = (() => {
 })();
 
 const getEmailConfig = (senderEmail: string) => {
-  const fromName = config.isDevelopment ? 'Romain BOBOE (Dev)' : 'Romain BOBOE';
-  const fromEmail = config.isDevelopment ? 'onboarding@resend.dev' : config.contactEmail;
+  // In development, use Resend's test email
+  // In production, use verified domain email
+  const fromConfig = config.isDevelopment 
+    ? {
+        name: 'Romain BOBOE (Dev)',
+        email: 'onboarding@resend.dev'
+      }
+    : {
+        name: 'Romain BOBOE',
+        email: 'contact@romainboboe.com' // Use your verified domain email
+      };
   
   return {
-    from: `${fromName} <${fromEmail}>`,
+    from: `${fromConfig.name} <${fromConfig.email}>`,
     to: config.contactEmail,
     replyTo: senderEmail,
     subject: `${config.isDevelopment ? '[TEST] ' : ''}📨 New Message from RomainBOBOE.com`
@@ -141,6 +150,22 @@ export default async function handler(
     const emailConfig = getEmailConfig(email);
     
     // Debug logging
+    console.log('Environment:', {
+      isDevelopment: config.isDevelopment,
+      apiUrl: config.apiUrl,
+      siteUrl: config.siteUrl,
+      contactEmail: config.contactEmail,
+      host: req.headers.host,
+      origin: req.headers.origin
+    });
+    
+    console.log('Email config:', {
+      from: emailConfig.from,
+      to: emailConfig.to,
+      replyTo: emailConfig.replyTo,
+      subject: emailConfig.subject
+    });
+    
     console.log('Sending email with config:', {
       ...emailConfig,
       message: message.substring(0, 100) + '...' // Only log first 100 chars
@@ -153,6 +178,8 @@ export default async function handler(
       replyTo: emailConfig.replyTo,
       react: EmailTemplate({ senderEmail: email, message }) // Use React component
     });
+
+    console.log('Resend API response:', JSON.stringify(result, null, 2));
 
     // Debug logging
     console.log('Email API response:', result);
