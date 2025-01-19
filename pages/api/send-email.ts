@@ -1,6 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Resend } from 'resend';
 
+// Define Resend API response type
+interface ResendEmailResponse {
+  data: {
+    id: string;
+  } | null;
+  error: Error | null;
+}
+
 // Enhanced environment variable checking
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const CONTACT_FORM_EMAIL = process.env.CONTACT_FORM_EMAIL;
@@ -130,17 +138,21 @@ export default async function handler(
       timestamp: new Date().toISOString()
     });
 
-    const data = await resend.emails.send(emailData);
+    const response = await resend.emails.send(emailData) as ResendEmailResponse;
+    
+    if (response.error) {
+      throw new Error(response.error.message);
+    }
     
     console.log('✅ Email sent successfully:', {
-      id: data.id,
+      id: response.data?.id,
       timestamp: new Date().toISOString()
     });
     
     return res.status(200).json({
       success: true,
       message: 'Email sent successfully',
-      id: data.id
+      id: response.data?.id
     });
 
   } catch (error: any) {

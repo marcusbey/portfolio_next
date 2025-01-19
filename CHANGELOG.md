@@ -61,3 +61,9 @@
 - Improved API endpoint error messages
 - Added emojis to console logs for better visibility
 - Added request origin validation
+
+### fix: add proper Resend API response type handling
+- Added ResendEmailResponse interface
+- Fixed type error with Resend API response
+- Added null checks for response data
+- Improved error handling for API responses
