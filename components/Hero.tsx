@@ -4,7 +4,7 @@ export const Hero = () => {
   return (
     <div className="max-w-5xl mx-auto mt-10 md:mt-20 px-8">
       <h1 className="font-bold text-3xl md:text-5xl leading-tight text-zinc-50 max-w-3xl">
-        From blueprints to binary —{" "}
+        From blueprints to binary:{" "}
         <span className="text-cyan-500">crafting tomorrow's interfaces</span>
       </h1>
       <p className="text-zinc-400 text-sm md:text-base max-w-2xl mt-8 leading-loose tracking-wide">
