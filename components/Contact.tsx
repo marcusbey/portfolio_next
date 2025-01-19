@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { FiMail, FiX } from "react-icons/fi";
 
 export const Contact = () => {
   const [open, setOpen] = useState(false);
@@ -7,6 +8,7 @@ export const Contact = () => {
   const [error, setError] = useState<string | null>("");
   const [loading, setLoading] = useState<Boolean>(false);
   const [isMessageValid, setIsMessageValid] = useState(false);
+  const [isButtonColored, setIsButtonColored] = useState(false);
 
   const [formState, setFormState] = useState({
     email: {
@@ -18,6 +20,19 @@ export const Contact = () => {
       error: "",
     },
   });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      setIsButtonColored(scrollPercent > 30);
+      if (scrollPercent > 95 && !open) {
+        setOpen(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [open]);
 
   const countWords = (text: string): number => {
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
@@ -148,97 +163,124 @@ export const Contact = () => {
   };
 
   return (
-    <AnimatePresence initial={false} onExitComplete={() => null}>
-      <div className="fixed right-4 md:right-10 bottom-10 flex flex-col items-end z-[99999]">
+    <>
+      <motion.button
+        onClick={() => setOpen(true)}
+        className={`fixed bottom-8 right-8 p-4 rounded-full shadow-lg transition-all duration-300 ${
+          isButtonColored ? 'bg-cyan-500 text-white' : 'bg-zinc-800 text-zinc-300'
+        }`}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <FiMail className="w-6 h-6" />
+      </motion.button>
+
+      <AnimatePresence>
         {open && (
-          <motion.div
-            variants={dropIn}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="mb-4 rounded-xl shadow-2xl bg-zinc-800   flex flex-col overflow-hidden mx-4 md:mx-0"
-          >
-            <div className="p-4 bg-zinc-700 ">
-              <h2 className="text-zinc-200 font-bold text-sm md:text-xl ">
-                Have a question? Drop in your message 👇
-              </h2>
-              <small className="hidden md:block text-xs text-zinc-400 mb-10 ">
-                It won't take more than 10 seconds. Shoot your shot. 😉
-              </small>
-            </div>
-            <div className="content p-6 flex flex-col bg-zinc-800">
-              <label className="text-sm font-normal text-zinc-400 mb-2 ">
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={formState.email.value}
-                onChange={(e) => onChangeHandler("email", e.target.value)}
-                className="text-zinc-400 rounded-md border bg-zinc-800 border-zinc-700 py-1 px-2 focus:outline-none focus:border-gray-400 placeholder:text-sm  mb-1"
-                placeholder="johndoe@xyz.com"
-              />
-
-              <small className="h-4 min-h-4 text-red-500 font-semibold">
-                {formState.email.error && formState.email.error}
-              </small>
-
-              <label className="text-sm font-normal text-zinc-400 mb-2 ">
-                Message
-              </label>
-              <textarea
-                rows={3}
-                value={formState.message.value}
-                onChange={(e) => onChangeHandler("message", e.target.value)}
-                className="text-zinc-400 rounded-md border border-zinc-700 py-1 px-2 bg-zinc-800 focus:outline-none focus:border-gray-400 placeholder:text-sm   mb-1"
-                placeholder="I'd love a compliment from you."
-              />
-              <small className="h-4 min-h-4 text-red-500 font-semibold mb-4">
-                {formState.message.error && formState.message.error}
-              </small>
-              <button
-                onClick={handleSubmit}
-                disabled={!isMessageValid}
-                className={`w-full px-4 py-2 md:py-4 border-2 rounded-md font-normal text-sm mb-4 transition duration-200 hover:shadow-none ${
-                  isMessageValid 
-                    ? 'text-zinc-100 border-cyan-500 bg-cyan-500 hover:bg-cyan-600 hover:border-cyan-600'
-                    : 'text-zinc-400 border-zinc-800 bg-zinc-700 cursor-not-allowed'
-                }`}
-              >
-                {loading ? "Submitting..." : "Submit"}
-              </button>
-              <small className="h-4 min-h-4 mb-4">
-                {success && (
-                  <p className="text-green-500 font-semibold text-sm">
-                    {success}
-                  </p>
-                )}
-                {error && (
-                  <p className="text-red-500 font-semibold text-sm">{error}</p>
-                )}
-              </small>
-            </div>
-          </motion.div>
-        )}
-        <button
-          onClick={handleButtonClick}
-          className="bg-zinc-700  w-14 h-14 rounded-full  flex items-center justify-center hover:scale-105 hover:shadow-xl transition duration-200 shadow-lg"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6 text-zinc-100"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black z-40"
+              onClick={() => setOpen(false)}
             />
-          </svg>
-        </button>
-      </div>
-    </AnimatePresence>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 50 }}
+              className="fixed inset-x-4 bottom-4 md:inset-auto md:bottom-auto md:right-4 md:top-4 md:left-auto md:w-[400px] bg-zinc-900 rounded-lg shadow-xl z-50"
+            >
+              <div className="p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-zinc-100 flex items-center gap-2">
+                    <FiMail className="w-5 h-5" />
+                    Contact Me
+                  </h2>
+                  <button
+                    onClick={() => setOpen(false)}
+                    className="text-zinc-400 hover:text-zinc-100 transition-colors"
+                  >
+                    <FiX className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <input
+                      type="email"
+                      placeholder="Your email"
+                      value={formState.email.value}
+                      onChange={(e) =>
+                        setFormState({
+                          ...formState,
+                          email: { value: e.target.value, error: "" },
+                        })
+                      }
+                      className="w-full px-4 py-2 bg-zinc-800 rounded-md border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-500"
+                    />
+                    {formState.email.error && (
+                      <p className="mt-1 text-red-500 text-sm">{formState.email.error}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <textarea
+                      placeholder="Your message"
+                      value={formState.message.value}
+                      onChange={(e) =>
+                        setFormState({
+                          ...formState,
+                          message: { value: e.target.value, error: "" },
+                        })
+                      }
+                      rows={4}
+                      className="w-full px-4 py-2 bg-zinc-800 rounded-md border border-zinc-700 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-500"
+                    />
+                    {formState.message.error && (
+                      <p className="mt-1 text-red-500 text-sm">{formState.message.error}</p>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={handleSubmit}
+                    disabled={!isMessageValid}
+                    className={`w-full px-4 py-2 md:py-4 border-2 rounded-md font-normal text-sm mb-4 transition duration-200 hover:shadow-none flex items-center justify-center gap-2 ${
+                      isMessageValid 
+                        ? 'text-zinc-100 border-cyan-500 bg-cyan-500 hover:bg-cyan-600 hover:border-cyan-600'
+                        : 'text-zinc-400 border-zinc-800 bg-zinc-700 cursor-not-allowed'
+                    }`}
+                  >
+                    <FiMail className="w-4 h-4" />
+                    {loading ? "Submitting..." : "Submit"}
+                  </button>
+
+                  {success && (
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-green-500 text-sm"
+                    >
+                      {success}
+                    </motion.p>
+                  )}
+
+                  {error && (
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-sm"
+                    >
+                      {error}
+                    </motion.p>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
