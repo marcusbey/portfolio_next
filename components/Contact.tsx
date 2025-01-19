@@ -77,9 +77,8 @@ export const Contact = () => {
     setSuccess(null);
 
     try {
-      const baseUrl = process.env.NODE_ENV === 'development' 
-        ? 'http://localhost:3000' 
-        : process.env.NEXT_PUBLIC_SITE_URL || '';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+      console.log('Sending request to:', `${baseUrl}/api/send-email`);
         
       const response = await fetch(`${baseUrl}/api/send-email`, {
         method: 'POST',
@@ -94,10 +93,12 @@ export const Contact = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('API Error:', errorData);
         throw new Error(errorData.message || 'Failed to send message');
       }
 
       const data = await response.json();
+      console.log('API Response:', data);
       setSuccess('Message sent successfully! I\'ll get back to you soon. 🚀');
       setFormState({
         email: { value: '', error: '' },

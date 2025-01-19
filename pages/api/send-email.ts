@@ -4,14 +4,15 @@ import { Resend } from 'resend';
 // Enhanced environment variable checking
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const CONTACT_FORM_EMAIL = process.env.CONTACT_FORM_EMAIL;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
 if (!RESEND_API_KEY) {
-  console.error('RESEND_API_KEY is not set in environment variables');
+  console.error('⚠️ RESEND_API_KEY is not set in environment variables');
 }
 
 if (!CONTACT_FORM_EMAIL) {
-  console.warn('CONTACT_FORM_EMAIL is not set, falling back to default');
+  console.warn('⚠️ CONTACT_FORM_EMAIL is not set, falling back to default');
 }
 
 const resend = new Resend(RESEND_API_KEY);
@@ -20,17 +21,23 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log('API Route Environment:', {
+  console.log('🔍 API Route Environment:', {
     nodeEnv: process.env.NODE_ENV,
     hasApiKey: !!RESEND_API_KEY,
     recipientEmail: CONTACT_FORM_EMAIL || 'hi@romainboboe.com',
-    siteUrl: SITE_URL || 'not set'
+    apiUrl: API_URL,
+    isDevelopment: IS_DEVELOPMENT
   });
 
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Set CORS headers for development
+  const origin = req.headers.origin || '';
+  const allowedOrigins = [API_URL, 'http://localhost:3000'];
+  
+  if (IS_DEVELOPMENT || allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }
 
   // Handle preflight request
   if (req.method === 'OPTIONS') {
@@ -44,21 +51,27 @@ export default async function handler(
   try {
     const { email, message } = req.body;
     
-    console.log('Received request:', {
+    console.log('📨 Received request:', {
       hasEmail: !!email,
       emailLength: email?.length,
       hasMessage: !!message,
       messageLength: message?.length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      origin: req.headers.origin
     });
 
     if (!email || !message) {
-      console.error('Missing required fields:', { email: !!email, message: !!message });
+      console.error('❌ Missing required fields:', { email: !!email, message: !!message });
       return res.status(400).json({ message: 'Email and message are required' });
     }
 
+    if (!RESEND_API_KEY) {
+      console.error('❌ Cannot send email: RESEND_API_KEY is missing');
+      return res.status(500).json({ message: 'Email service configuration error' });
+    }
+
     const recipientEmail = CONTACT_FORM_EMAIL || 'hi@romainboboe.com';
-    console.log('Attempting to send email to:', recipientEmail);
+    console.log('📧 Attempting to send email to:', recipientEmail);
 
     const emailData = {
       from: 'Contact Form <onboarding@resend.dev>',
@@ -111,7 +124,7 @@ export default async function handler(
       `
     };
 
-    console.log('Sending email with data:', {
+    console.log('📤 Sending email with data:', {
       to: recipientEmail,
       replyTo: email,
       timestamp: new Date().toISOString()
@@ -119,7 +132,7 @@ export default async function handler(
 
     const data = await resend.emails.send(emailData);
     
-    console.log('Email sent successfully:', {
+    console.log('✅ Email sent successfully:', {
       id: data.id,
       timestamp: new Date().toISOString()
     });
@@ -131,7 +144,7 @@ export default async function handler(
     });
 
   } catch (error: any) {
-    console.error('Failed to send email:', {
+    console.error('❌ Failed to send email:', {
       error: error.message,
       stack: error.stack,
       timestamp: new Date().toISOString()

@@ -54,3 +54,10 @@
 - Enhanced error handling and reporting
 - Added detailed request and response logging
 - Improved error messages for better debugging
+
+### fix: improve contact form API configuration
+- Added NEXT_PUBLIC_API_URL environment variable
+- Enhanced CORS handling for development
+- Improved API endpoint error messages
+- Added emojis to console logs for better visibility
+- Added request origin validation
