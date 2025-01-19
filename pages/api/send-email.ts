@@ -16,20 +16,34 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
 // Initialize Resend
-let resend: Resend;
+let resend: Resend | null = null;
 try {
-  if (!RESEND_API_KEY?.startsWith('re_')) {
+  if (!RESEND_API_KEY) {
+    console.error('RESEND_API_KEY is not defined');
+    throw new Error('RESEND_API_KEY is not defined');
+  }
+  
+  if (!RESEND_API_KEY.startsWith('re_')) {
+    console.error('Invalid API key format. Must start with "re_"');
     throw new Error('Invalid API key format. Must start with "re_"');
   }
+  
   resend = new Resend(RESEND_API_KEY);
+  console.log('Resend initialized successfully');
 } catch (error) {
-  resend = new Resend(''); // Fallback to empty key for type safety
+  console.error('Error initializing Resend:', error);
 }
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log('Received request:', {
+    method: req.method,
+    headers: req.headers,
+    body: req.body
+  });
+
   // Set CORS headers for development
   const origin = req.headers.origin || '';
   const allowedOrigins = [API_URL, 'http://localhost:3000'];
@@ -49,24 +63,37 @@ export default async function handler(
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
+  if (!resend) {
+    console.error('Resend client not initialized');
+    return res.status(500).json({
+      success: false,
+      message: 'Email service not initialized',
+      error: 'Internal server error'
+    });
+  }
+
   try {
+    console.log('Processing request body:', req.body);
     const { email, message } = req.body;
 
     if (!email || !message) {
+      console.error('Missing required fields:', { email: !!email, message: !!message });
       return res.status(400).json({ message: 'Email and message are required' });
     }
 
     if (!RESEND_API_KEY) {
+      console.error('RESEND_API_KEY is missing in environment');
       return res.status(500).json({ 
         message: 'Email service configuration error',
         details: 'API key is missing'
       });
     }
 
-    const recipientEmail = CONTACT_FORM_EMAIL || 'hi@romainboboe.com';
+    const recipientEmail = IS_DEVELOPMENT ? 'rboboe@gmail.com' : (CONTACT_FORM_EMAIL || 'hi@romainboboe.com');
+    console.log('Sending email to:', recipientEmail);
 
     const emailData = {
-      from: 'Contact Form <onboarding@resend.dev>',
+      from: IS_DEVELOPMENT ? 'onboarding@resend.dev' : 'Contact Form <hi@romainboboe.com>',
       to: recipientEmail,
       replyTo: email,
       subject: 'New Message from RomainBOBOE.com',
@@ -117,26 +144,50 @@ export default async function handler(
     };
 
     try {
+      console.log('Attempting to send email with data:', { 
+        to: emailData.to,
+        from: emailData.from,
+        replyTo: emailData.replyTo,
+        subject: emailData.subject
+      });
+
       const response = await resend.emails.send(emailData) as ResendEmailResponse;
       
       if (response.error) {
-        throw new Error(`Resend API Error: ${response.error.message}`);
+        console.error('Resend API Error:', response.error);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to send email',
+          error: response.error.message
+        });
       }
 
       if (!response.data?.id) {
-        throw new Error('No email ID returned from Resend');
+        console.error('No email ID returned from Resend');
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to send email',
+          error: 'No confirmation received from email service'
+        });
       }
       
+      console.log('Email sent successfully:', response.data.id);
       return res.status(200).json({
         success: true,
         message: 'Email sent successfully',
         id: response.data.id
       });
     } catch (sendError: any) {
-      throw new Error(`Failed to send email via Resend: ${sendError.message}`);
+      console.error('Error sending email via Resend:', sendError);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to send email',
+        error: sendError.message
+      });
     }
 
   } catch (error: any) {
+    console.error('General error in API route:', error);
     return res.status(500).json({
       success: false,
       message: 'Failed to send email',

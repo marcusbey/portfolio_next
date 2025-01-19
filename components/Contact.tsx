@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 export const Contact = () => {
@@ -6,6 +6,7 @@ export const Contact = () => {
   const [success, setSuccess] = useState<string | null>("");
   const [error, setError] = useState<string | null>("");
   const [loading, setLoading] = useState<Boolean>(false);
+  const [isMessageValid, setIsMessageValid] = useState(false);
 
   const [formState, setFormState] = useState({
     email: {
@@ -17,6 +18,15 @@ export const Contact = () => {
       error: "",
     },
   });
+
+  const countWords = (text: string): number => {
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
+
+  useEffect(() => {
+    const wordCount = countWords(formState.message.value);
+    setIsMessageValid(wordCount >= 3);
+  }, [formState.message.value]);
 
   const dropIn = {
     hidden: {
@@ -72,12 +82,20 @@ export const Contact = () => {
       return;
     }
 
+    if (!isMessageValid) {
+      updatedState.message.error = `Message must be at least 3 words.`;
+      setFormState({ ...updatedState });
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
+      console.log('Sending request to:', `${baseUrl}/api/send-email`);
+      console.log('Request data:', { email: email.value, message: message.value });
       
       const response = await fetch(`${baseUrl}/api/send-email`, {
         method: 'POST',
@@ -91,9 +109,10 @@ export const Contact = () => {
       });
 
       const data = await response.json();
+      console.log('Response:', { status: response.status, data });
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to send message');
+        throw new Error(data.error || data.message || 'Failed to send message');
       }
 
       // Clear form on success
@@ -104,6 +123,7 @@ export const Contact = () => {
       
       setSuccess('Message sent successfully! I\'ll get back to you soon. 🚀');
     } catch (error: any) {
+      console.error('Form submission error:', error);
       setError(error.message || 'Failed to send message. Please try again.');
     } finally {
       setLoading(false);
@@ -177,7 +197,12 @@ export const Contact = () => {
               </small>
               <button
                 onClick={handleSubmit}
-                className="text-zinc-100  w-full px-4 py-2 md:py-4 border-2 border-zinc-800 bg-zinc-700 rounded-md font-normal text-sm  mb-4 transition duration-200 hover:shadow-none"
+                disabled={!isMessageValid}
+                className={`w-full px-4 py-2 md:py-4 border-2 rounded-md font-normal text-sm mb-4 transition duration-200 hover:shadow-none ${
+                  isMessageValid 
+                    ? 'text-zinc-100 border-cyan-500 bg-cyan-500 hover:bg-cyan-600 hover:border-cyan-600'
+                    : 'text-zinc-400 border-zinc-800 bg-zinc-700 cursor-not-allowed'
+                }`}
               >
                 {loading ? "Submitting..." : "Submit"}
               </button>
