@@ -75,3 +75,10 @@
 - Improved contact form error handling
 - Added form clearing on successful submission
 - Added better console logging with emojis
+
+### fix: enhance email API error handling
+- Added detailed environment variable logging
+- Added Resend API initialization error handling
+- Added raw API response logging
+- Added detailed error messages with timestamps
+- Added nested try-catch for better error isolation

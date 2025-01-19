@@ -15,6 +15,15 @@ const CONTACT_FORM_EMAIL = process.env.CONTACT_FORM_EMAIL;
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
+// Debug environment variables
+console.log('🔧 Environment Variables:', {
+  hasApiKey: !!RESEND_API_KEY,
+  apiKeyLength: RESEND_API_KEY?.length,
+  contactEmail: CONTACT_FORM_EMAIL,
+  apiUrl: API_URL,
+  nodeEnv: process.env.NODE_ENV
+});
+
 if (!RESEND_API_KEY) {
   console.error('⚠️ RESEND_API_KEY is not set in environment variables');
 }
@@ -23,7 +32,15 @@ if (!CONTACT_FORM_EMAIL) {
   console.warn('⚠️ CONTACT_FORM_EMAIL is not set, falling back to default');
 }
 
-const resend = new Resend(RESEND_API_KEY);
+// Initialize Resend with error handling
+let resend: Resend;
+try {
+  resend = new Resend(RESEND_API_KEY);
+  console.log('✅ Resend initialized successfully');
+} catch (error) {
+  console.error('❌ Failed to initialize Resend:', error);
+  resend = new Resend(''); // Fallback to empty key for type safety
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -75,7 +92,10 @@ export default async function handler(
 
     if (!RESEND_API_KEY) {
       console.error('❌ Cannot send email: RESEND_API_KEY is missing');
-      return res.status(500).json({ message: 'Email service configuration error' });
+      return res.status(500).json({ 
+        message: 'Email service configuration error',
+        details: 'API key is missing'
+      });
     }
 
     const recipientEmail = CONTACT_FORM_EMAIL || 'hi@romainboboe.com';
@@ -138,22 +158,37 @@ export default async function handler(
       timestamp: new Date().toISOString()
     });
 
-    const response = await resend.emails.send(emailData) as ResendEmailResponse;
-    
-    if (response.error) {
-      throw new Error(response.error.message);
+    try {
+      const response = await resend.emails.send(emailData) as ResendEmailResponse;
+      console.log('📬 Raw Resend Response:', response);
+      
+      if (response.error) {
+        throw new Error(`Resend API Error: ${response.error.message}`);
+      }
+
+      if (!response.data?.id) {
+        throw new Error('No email ID returned from Resend');
+      }
+      
+      console.log('✅ Email sent successfully:', {
+        id: response.data.id,
+        timestamp: new Date().toISOString()
+      });
+      
+      return res.status(200).json({
+        success: true,
+        message: 'Email sent successfully',
+        id: response.data.id
+      });
+    } catch (sendError: any) {
+      console.error('❌ Resend API Error:', {
+        error: sendError.message,
+        stack: sendError.stack,
+        timestamp: new Date().toISOString()
+      });
+      
+      throw new Error(`Failed to send email via Resend: ${sendError.message}`);
     }
-    
-    console.log('✅ Email sent successfully:', {
-      id: response.data?.id,
-      timestamp: new Date().toISOString()
-    });
-    
-    return res.status(200).json({
-      success: true,
-      message: 'Email sent successfully',
-      id: response.data?.id
-    });
 
   } catch (error: any) {
     console.error('❌ Failed to send email:', {
@@ -165,7 +200,8 @@ export default async function handler(
     return res.status(500).json({
       success: false,
       message: 'Failed to send email',
-      error: error.message
+      error: error.message,
+      timestamp: new Date().toISOString()
     });
   }
 }
