@@ -6,3 +6,5 @@
 - Added Nodemailer implementation as an alternative to Resend
 - Created new API endpoint for Nodemailer email sending
 - Added documentation for both email implementations
+
+### docs: add RESEND_API_KEY to environment variables example
