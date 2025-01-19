@@ -104,7 +104,8 @@ export default async function handler(
             <style>
               body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
               .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background-color: #1f2937; color: white; padding: 20px; border-radius: 8px; }
+              .header { background-color: #1f2937; color: white; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px; }
+              .header svg { width: 32px; height: 32px; }
               .content { background-color: #f9fafb; padding: 20px; border-radius: 8px; margin-top: 20px; }
               .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 0.875rem; }
             </style>
@@ -112,6 +113,10 @@ export default async function handler(
           <body>
             <div class="container">
               <div class="header">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #06b6d4;">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
                 <h1 style="margin: 0;">New Message from Your Website</h1>
               </div>
               <div class="content">
