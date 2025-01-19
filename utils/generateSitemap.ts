@@ -1,10 +1,10 @@
-import { writeFileSync } from 'fs';
-import { globby } from 'globby';
-import prettier from 'prettier';
+const { writeFileSync } = require('fs');
+const prettier = require('prettier');
 
-async function generateSitemap() {
+async function generateSitemap(): Promise<void> {
+  const { globby } = await import('globby');
   const prettierConfig = await prettier.resolveConfig('./.prettierrc');
-  const pages = await globby([
+  const pages: string[] = await globby([
     'pages/**/*.tsx',
     'pages/*.tsx',
     '!pages/_*.tsx',
@@ -17,7 +17,7 @@ async function generateSitemap() {
     <?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
       ${pages
-        .map((page) => {
+        .map((page: string) => {
           const path = page
             .replace('pages', '')
             .replace('.tsx', '')
@@ -36,10 +36,12 @@ async function generateSitemap() {
     </urlset>
   `;
 
-  const formatted = prettier.format(sitemap, {
+  const formatted = await prettier.format(sitemap, {
     ...prettierConfig,
     parser: 'html',
   });
 
   writeFileSync('public/sitemap.xml', formatted);
 }
+
+generateSitemap();
