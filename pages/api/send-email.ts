@@ -65,7 +65,7 @@ const getEmailConfig = (senderEmail: string) => {
       }
     : {
         name: 'Romain BOBOE',
-        email: 'hello@romainboboe.com'
+        email: 'email@romainboboe.com'
       };
   
   // In development, MUST send to the verified email (rboboe@gmail.com)
