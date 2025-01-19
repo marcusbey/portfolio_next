@@ -34,9 +34,13 @@ export default async function handler(
       return res.status(400).json({ message: 'Email and message are required' });
     }
 
+    // Use environment variable for recipient email, fallback to default if not set
+    const recipientEmail = process.env.CONTACT_FORM_EMAIL || 'hi@romainboboe.com';
+    console.log('Sending email to:', recipientEmail);
+
     const emailData = {
       from: 'Contact Form <onboarding@resend.dev>',
-      to: 'hi@romainboboe.com',
+      to: recipientEmail,
       replyTo: email,
       subject: '💌 New Message from RomainBOBOE.com',
       html: `
