@@ -2,11 +2,16 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Resend } from 'resend';
 
 // Define Resend API response type
+interface ErrorResponse {
+  name: string;
+  message: string;
+}
+
 interface ResendEmailResponse {
   data: {
     id: string;
   } | null;
-  error: Error | null;
+  error: ErrorResponse | null;
 }
 
 // Environment variables
@@ -103,7 +108,7 @@ export default async function handler(
       RESEND_API_KEY_VALID: RESEND_API_KEY?.startsWith('re_')
     });
 
-    const result = await resend.emails.send({
+    const emailData = {
       from: 'Contact Form <hi@romainboboe.com>',
       to: recipientEmail,
       replyTo: email,
@@ -157,10 +162,24 @@ export default async function handler(
           </body>
         </html>
       `
+    };
+
+    console.log('Sending email with data:', {
+      to: emailData.to,
+      from: emailData.from,
+      replyTo: emailData.replyTo,
+      subject: emailData.subject
     });
 
+    const result = await resend.emails.send(emailData);
+    console.log('Resend API Response:', result);
+
     if (result.error) {
-      console.error('Resend API Error:', result.error);
+      console.error('Resend API Error:', {
+        error: result.error,
+        errorMessage: result.error.message,
+        errorName: result.error.name
+      });
       return res.status(500).json({
         success: false,
         message: 'Failed to send email',
@@ -168,20 +187,16 @@ export default async function handler(
       });
     }
 
-    if (!result.data?.id) {
-      console.error('No email ID returned from Resend');
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to send email',
-        error: 'No confirmation received from email service'
-      });
-    }
-    
-    console.log('Email sent successfully:', result.data.id);
+    console.log('Email sent successfully:', {
+      id: result.data?.id,
+      to: recipientEmail,
+      from: emailData.from
+    });
+
     return res.status(200).json({
       success: true,
       message: 'Email sent successfully',
-      id: result.data.id
+      id: result.data?.id
     });
   } catch (error: any) {
     console.error('General error in API route:', error);
