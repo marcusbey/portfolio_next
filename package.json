@@ -12,7 +12,7 @@
     "generate:sitemap": "node -r ts-node/register ./utils/generateSitemap.ts",
     "generate:favicons": "node ./scripts/generateFavicons.js",
     "generate:og": "node ./scripts/generateOgImages.js",
-    "prebuild": "npm run generate:sitemap && npm run generate:favicons && npm run generate:og"
+    "prebuild": "npm run generate:sitemap && npm run generate:favicons"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.13",

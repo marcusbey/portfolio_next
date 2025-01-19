@@ -95,7 +95,7 @@ export default async function handler(
     const result = await resend.emails.send({
       from: 'Contact Form <hi@romainboboe.com>',
       to: recipientEmail,
-      reply_to: email,
+      replyTo: email,
       subject: 'New Message from RomainBOBOE.com',
       html: `
         <!DOCTYPE html>
