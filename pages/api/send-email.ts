@@ -18,6 +18,7 @@ interface ApiResponse {
 const config = {
   resendKey: process.env.RESEND_API_KEY,
   contactEmail: process.env.CONTACT_FORM_EMAIL || 'hi@romainboboe.com',
+  devEmail: 'rboboe@gmail.com',
   apiUrl: process.env.NEXT_PUBLIC_API_URL || 'https://www.romainboboe.com',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.romainboboe.com',
   isDevelopment: process.env.NODE_ENV === 'development'
@@ -46,8 +47,6 @@ const resend = (() => {
 })();
 
 const getEmailConfig = (senderEmail: string) => {
-  // In development, use Resend's test email
-  // In production, use verified domain email
   const fromConfig = config.isDevelopment 
     ? {
         name: 'Romain BOBOE (Dev)',
@@ -55,12 +54,18 @@ const getEmailConfig = (senderEmail: string) => {
       }
     : {
         name: 'Romain BOBOE',
-        email: 'contact@romainboboe.com' // Use your verified domain email
+        email: 'hello@romainboboe.com'
       };
+  
+  // In development, MUST send to the verified email (rboboe@gmail.com)
+  // In production, can send to any email after domain verification
+  const toEmail = config.isDevelopment 
+    ? config.devEmail  // rboboe@gmail.com
+    : config.contactEmail; // hi@romainboboe.com
   
   return {
     from: `${fromConfig.name} <${fromConfig.email}>`,
-    to: config.contactEmail,
+    to: toEmail,
     replyTo: senderEmail,
     subject: `${config.isDevelopment ? '[TEST] ' : ''}📨 New Message from RomainBOBOE.com`
   };
