@@ -80,7 +80,8 @@ export const Contact = () => {
     setFormState({ ...formState, ...state });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     let { email, message } = formState;
     let updatedState = { ...formState };
     let regex =
@@ -115,11 +116,12 @@ export const Contact = () => {
     setSuccess(null);
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
-      console.log('Sending request to:', `${baseUrl}/api/send-email`);
-      console.log('Request data:', { email: email.value, message: message.value });
-      
-      const response = await fetch(`${baseUrl}/api/send-email`, {
+      // Get the current origin (hostname) in production, or use relative path in development
+      const apiUrl = process.env.NODE_ENV === 'production' 
+        ? `${window.location.origin}/api/send-email`
+        : '/api/send-email';
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

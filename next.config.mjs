@@ -8,8 +8,8 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     domains: [
-      "api.microlink.io", // Microlink Image Preview
-      "avatars.githubusercontent.com", // GitHub avatars
+      "api.microlink.io",
+      "avatars.githubusercontent.com",
     ],
   },
   experimental: {
@@ -25,17 +25,16 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Allow scripts from Vercel and other necessary sources
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://nownownow.io https://datafa.st https://*.vercel.app",
+              // Allow scripts from necessary sources
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel.app",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https: blob:",
               "font-src 'self' data:",
-              // Allow connections to necessary APIs
-              "connect-src 'self' https://api.github.com https://api.resend.com https://datafa.st https://vercel.live https://*.vercel.app wss://*.vercel.app https://*.vercel.live",
+              // Allow connections to necessary APIs and the site itself
+              "connect-src 'self' https://api.github.com https://api.resend.com https://*.vercel.app wss://*.vercel.app https://*.vercel.live https://romainboboe.com https://*.romainboboe.com",
               "frame-src 'self' https://vercel.live",
               "media-src 'self'",
               "worker-src 'self' blob:",
-              // Allow WebSocket connections
               "child-src 'self' blob:",
             ].join('; '),
           },
