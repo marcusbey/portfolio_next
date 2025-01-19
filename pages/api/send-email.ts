@@ -19,6 +19,7 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const CONTACT_FORM_EMAIL = process.env.CONTACT_FORM_EMAIL;
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://romainboboe.com';
 
 // Initialize Resend
 let resend: Resend | null = null;
@@ -34,7 +35,12 @@ try {
   }
   
   resend = new Resend(RESEND_API_KEY);
-  console.log('Resend initialized successfully');
+  console.log('Resend initialized successfully', {
+    isDevelopment: IS_DEVELOPMENT,
+    siteUrl: SITE_URL,
+    apiUrl: API_URL,
+    contactEmail: CONTACT_FORM_EMAIL
+  });
 } catch (error) {
   console.error('Error initializing Resend:', error);
 }
@@ -109,13 +115,26 @@ export default async function handler(
     });
 
     // Email configuration based on environment
+    const fromEmail = IS_DEVELOPMENT 
+      ? 'Romain BOBOE <onboarding@resend.dev>'
+      : `Contact Form <${CONTACT_FORM_EMAIL}>`;  // Use verified email in production
+
+    const toEmail = IS_DEVELOPMENT 
+      ? 'rboboe@gmail.com'
+      : CONTACT_FORM_EMAIL;
+
+    console.log('Email environment configuration:', {
+      IS_DEVELOPMENT,
+      fromEmail,
+      toEmail,
+      SITE_URL,
+      API_URL,
+      NODE_ENV: process.env.NODE_ENV
+    });
+
     const emailData = {
-      from: IS_DEVELOPMENT 
-        ? 'Romain BOBOE <onboarding@resend.dev>'  // Use Resend's testing domain in development
-        : 'Contact Form <hi@romainboboe.com>',    // Use custom domain in production
-      to: IS_DEVELOPMENT 
-        ? 'rboboe@gmail.com'  // Send only to verified email in development
-        : recipientEmail,     // Send to configured email in production
+      from: fromEmail,
+      to: toEmail,
       replyTo: email,
       subject: `${IS_DEVELOPMENT ? '[TEST] ' : ''}📨 New Message from RomainBOBOE.com`,
       html: `
@@ -180,7 +199,9 @@ export default async function handler(
       environment: process.env.NODE_ENV,
       apiKeyPrefix: RESEND_API_KEY?.substring(0, 5),
       isDevelopment: IS_DEVELOPMENT,
-      resendInitialized: !!resend
+      resendInitialized: !!resend,
+      siteUrl: SITE_URL,
+      apiUrl: API_URL
     });
 
     const result = await resend.emails.send(emailData);
@@ -190,7 +211,11 @@ export default async function handler(
       console.error('Resend API Error:', {
         error: result.error,
         errorMessage: result.error.message,
-        errorName: result.error.name
+        errorName: result.error.name,
+        environment: process.env.NODE_ENV,
+        isDevelopment: IS_DEVELOPMENT,
+        fromEmail,
+        toEmail
       });
       return res.status(500).json({
         success: false,
