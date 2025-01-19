@@ -18,7 +18,7 @@ export const Hero = () => {
         <p>
           Vim enthusiast by day, research paper explorer by night. I thrive on
           unconventional problem-solving and believe the best solutions often
-          hide in unexpected places. Currently crafting the future at{" "}
+          hide in unexpected places. Currently working on{" "}
           <LinkPreview
             className={
               "text-zinc-200 font-bold hover:text-cyan-500 transition duration-150 outline-none"

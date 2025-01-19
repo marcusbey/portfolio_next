@@ -78,7 +78,7 @@ export const Contact = () => {
 
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-      console.log('Sending request to:', `${baseUrl}/api/send-email`);
+      console.log('📧 Sending request to:', `${baseUrl}/api/send-email`);
         
       const response = await fetch(`${baseUrl}/api/send-email`, {
         method: 'POST',
@@ -91,22 +91,23 @@ export const Contact = () => {
         }),
       });
 
+      const data = await response.json();
+      console.log('📬 API Response:', data);
+
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        throw new Error(errorData.message || 'Failed to send message');
+        throw new Error(data.message || 'Failed to send message');
       }
 
-      const data = await response.json();
-      console.log('API Response:', data);
-      setSuccess('Message sent successfully! I\'ll get back to you soon. 🚀');
+      // Clear form on success
       setFormState({
         email: { value: '', error: '' },
         message: { value: '', error: '' },
       });
-    } catch (err) {
-      console.error('Error:', err);
-      setError('Failed to send message. Please try again later.');
+      
+      setSuccess('Message sent successfully! I\'ll get back to you soon. 🚀');
+    } catch (error: any) {
+      console.error('❌ Contact form error:', error);
+      setError(error.message || 'Failed to send message. Please try again.');
     } finally {
       setLoading(false);
     }
