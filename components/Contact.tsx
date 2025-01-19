@@ -111,15 +111,14 @@ export const Contact = () => {
       return;
     }
 
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
-
     try {
-      // Get the current origin (hostname) in production, or use relative path in development
       const apiUrl = process.env.NODE_ENV === 'production' 
         ? `${window.location.origin}/api/send-email`
         : '/api/send-email';
+
+      setLoading(true);
+      setError(null);
+      setSuccess(null);
 
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -137,6 +136,10 @@ export const Contact = () => {
 
       if (!response.ok) {
         throw new Error(data.error || data.message || 'Failed to send message');
+      }
+
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to send message');
       }
 
       // Clear form on success
