@@ -173,11 +173,15 @@ export const Contact = () => {
     <>
       <motion.button
         onClick={() => setOpen(true)}
-        className={`fixed bottom-5 right-5 z-50 p-4 rounded-full bg-zinc-800 hover:scale-110 transition duration-300 ${
-          isScrolled ? 'bg-cyan-500 hover:bg-cyan-600' : 'bg-zinc-800 hover:bg-zinc-700'
+        className={`fixed bottom-5 right-5 z-50 p-4 rounded-full transition-all duration-500 ease-in-out transform ${
+          isScrolled ? 'bg-cyan-500 hover:bg-cyan-600 scale-110' : 'bg-zinc-800 hover:bg-zinc-700'
         }`}
-        whileHover={{ scale: 1.1 }}
+        whileHover={{ scale: 1.2 }}
         whileTap={{ scale: 0.9 }}
+        animate={{
+          backgroundColor: isScrolled ? '#06b6d4' : '#27272a',
+          transition: { duration: 0.5 }
+        }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -210,17 +214,17 @@ export const Contact = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white p-8 ring-1 ring-zinc-900/5 dark:bg-zinc-900 dark:ring-zinc-800 md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-2xl"
+              className="fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-zinc-900 p-8 border border-zinc-800/50 md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-2xl"
             >
-              <div className="p-4 bg-zinc-700 ">
-                <h2 className="text-zinc-200 font-bold text-sm md:text-xl ">
+              <div className="p-4 bg-zinc-800/50 rounded-2xl backdrop-blur-sm">
+                <h2 className="text-zinc-200 font-bold text-sm md:text-xl">
                   Have a question? Drop in your message 👇
                 </h2>
-                <small className="hidden md:block text-xs text-zinc-400 mb-10 ">
+                <small className="hidden md:block text-xs text-zinc-400 mb-10">
                   It won't take more than 10 seconds. Shoot your shot. 😉
                 </small>
               </div>
-              <div className="content p-6 flex flex-col bg-zinc-800">
+              <div className="content p-6 flex flex-col bg-zinc-900/50 rounded-2xl mt-4 backdrop-blur-sm">
                 <label className="text-sm font-normal text-zinc-400 mb-2 ">
                   Email Address
                 </label>
@@ -228,7 +232,7 @@ export const Contact = () => {
                   type="email"
                   value={formState.email.value}
                   onChange={(e) => onChangeHandler("email", e.target.value)}
-                  className="text-zinc-400 rounded-md border bg-zinc-800 border-zinc-700 py-1 px-2 focus:outline-none focus:border-gray-400 placeholder:text-sm  mb-1"
+                  className="text-zinc-400 rounded-md border bg-zinc-900 border-zinc-700 py-1 px-2 focus:outline-none focus:border-gray-400 placeholder:text-sm  mb-1"
                   placeholder="johndoe@xyz.com"
                 />
 
@@ -243,7 +247,7 @@ export const Contact = () => {
                   rows={3}
                   value={formState.message.value}
                   onChange={(e) => onChangeHandler("message", e.target.value)}
-                  className="text-zinc-400 rounded-md border border-zinc-700 py-1 px-2 bg-zinc-800 focus:outline-none focus:border-gray-400 placeholder:text-sm   mb-1"
+                  className="text-zinc-400 rounded-md border border-zinc-700 py-1 px-2 bg-zinc-900 focus:outline-none focus:border-gray-400 placeholder:text-sm   mb-1"
                   placeholder="I'd love a compliment from you."
                 />
                 <small className="h-4 min-h-4 text-red-500 font-semibold mb-4">
