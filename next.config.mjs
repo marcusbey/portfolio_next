@@ -25,31 +25,73 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Allow scripts from necessary sources
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel.app",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https: blob:",
-              "font-src 'self' data:",
-              // Allow connections to necessary APIs and the site itself
-              "connect-src 'self' https://api.github.com https://api.resend.com https://*.vercel.app wss://*.vercel.app https://*.vercel.live https://romainboboe.com https://*.romainboboe.com",
-              "frame-src 'self' https://vercel.live",
-              "media-src 'self'",
-              "worker-src 'self' blob:",
-              "child-src 'self' blob:",
-            ].join('; '),
+              "connect-src 'self' https://api.resend.com"
+            ].join('; ')
+          },
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          }
+        ]
+      },
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Credentials', value: 'true' },
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET,POST,OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version' }
+        ]
+      }
+    ];
+  },
+  async redirects() {
+    return [
+      // Redirect non-www to www
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'romainboboe.com',
           },
         ],
+        permanent: true,
+        destination: 'https://www.romainboboe.com/:path*',
       },
     ];
   },
-  // Ensure API routes are properly handled
   async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: '/api/:path*',
-      },
-    ];
+    return {
+      beforeFiles: [
+        // Handle API routes only on www
+        {
+          source: '/api/:path*',
+          destination: '/api/:path*',
+          has: [
+            {
+              type: 'host',
+              value: 'www.romainboboe.com',
+            },
+          ],
+        },
+      ],
+      afterFiles: [
+        {
+          source: '/:path*',
+          destination: 'https://www.romainboboe.com/:path*',
+          has: [
+            {
+              type: 'host',
+              value: 'romainboboe.com',
+            },
+          ],
+        },
+      ],
+    };
   },
 };
 
