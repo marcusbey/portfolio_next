@@ -1,15 +1,32 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Resend } from 'resend';
 
-// Log the API key presence (not the actual key)
-console.log('API Key present:', !!process.env.RESEND_API_KEY);
+// Enhanced environment variable checking
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const CONTACT_FORM_EMAIL = process.env.CONTACT_FORM_EMAIL;
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+if (!RESEND_API_KEY) {
+  console.error('RESEND_API_KEY is not set in environment variables');
+}
+
+if (!CONTACT_FORM_EMAIL) {
+  console.warn('CONTACT_FORM_EMAIL is not set, falling back to default');
+}
+
+const resend = new Resend(RESEND_API_KEY);
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log('API Route Environment:', {
+    nodeEnv: process.env.NODE_ENV,
+    hasApiKey: !!RESEND_API_KEY,
+    recipientEmail: CONTACT_FORM_EMAIL || 'hi@romainboboe.com',
+    siteUrl: SITE_URL || 'not set'
+  });
+
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -27,16 +44,21 @@ export default async function handler(
   try {
     const { email, message } = req.body;
     
-    // Log the request body (for debugging)
-    console.log('Received email request:', { email: email ? 'present' : 'missing', message: message ? 'present' : 'missing' });
+    console.log('Received request:', {
+      hasEmail: !!email,
+      emailLength: email?.length,
+      hasMessage: !!message,
+      messageLength: message?.length,
+      timestamp: new Date().toISOString()
+    });
 
     if (!email || !message) {
+      console.error('Missing required fields:', { email: !!email, message: !!message });
       return res.status(400).json({ message: 'Email and message are required' });
     }
 
-    // Use environment variable for recipient email, fallback to default if not set
-    const recipientEmail = process.env.CONTACT_FORM_EMAIL || 'hi@romainboboe.com';
-    console.log('Sending email to:', recipientEmail);
+    const recipientEmail = CONTACT_FORM_EMAIL || 'hi@romainboboe.com';
+    console.log('Attempting to send email to:', recipientEmail);
 
     const emailData = {
       from: 'Contact Form <onboarding@resend.dev>',
@@ -89,23 +111,36 @@ export default async function handler(
       `
     };
 
+    console.log('Sending email with data:', {
+      to: recipientEmail,
+      replyTo: email,
+      timestamp: new Date().toISOString()
+    });
+
     const data = await resend.emails.send(emailData);
-    console.log('Email sent successfully:', data);
     
-    // Return a proper JSON response
+    console.log('Email sent successfully:', {
+      id: data.id,
+      timestamp: new Date().toISOString()
+    });
+    
     return res.status(200).json({
       success: true,
       message: 'Email sent successfully',
       id: data.id
     });
 
-  } catch (error) {
-    console.error('Error sending email:', error);
-    // Return a proper JSON response for errors
-    return res.status(500).json({ 
+  } catch (error: any) {
+    console.error('Failed to send email:', {
+      error: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
+    
+    return res.status(500).json({
       success: false,
-      message: 'Error sending email',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      message: 'Failed to send email',
+      error: error.message
     });
   }
 }
