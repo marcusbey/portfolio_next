@@ -167,7 +167,7 @@ export const Contact = () => {
         stack: error.stack
       });
       setError(
-        `Failed to send message: ${error.message}. Please try again or contact me directly at ${CONTACT_FORM_EMAIL}.`
+        `Failed to send message: ${error.message}. Please try again or contact me directly at hi@romainboboe.com`
       );
     } finally {
       setLoading(false);
