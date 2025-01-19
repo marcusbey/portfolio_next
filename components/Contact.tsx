@@ -116,6 +116,8 @@ export const Contact = () => {
         ? `${window.location.origin}/api/send-email`
         : '/api/send-email';
 
+      console.log('Sending email request to:', apiUrl);
+      
       setLoading(true);
       setError(null);
       setSuccess(null);
@@ -132,14 +134,23 @@ export const Contact = () => {
       });
 
       const data = await response.json();
-      console.log('Response:', { status: response.status, data });
+      console.log('Response:', { 
+        status: response.status, 
+        ok: response.ok,
+        data,
+        headers: Object.fromEntries(response.headers.entries())
+      });
 
       if (!response.ok) {
-        throw new Error(data.error || data.message || 'Failed to send message');
+        throw new Error(
+          `Failed to send message: ${data.error || data.message || 'Unknown error'}`
+        );
       }
 
       if (!data.success) {
-        throw new Error(data.message || 'Failed to send message');
+        throw new Error(
+          `Server error: ${data.message || 'Failed to send message'}`
+        );
       }
 
       // Clear form on success
@@ -150,8 +161,14 @@ export const Contact = () => {
       
       setSuccess('Message sent successfully! I\'ll get back to you soon. 🚀');
     } catch (error: any) {
-      console.error('Form submission error:', error);
-      setError(error.message || 'Failed to send message. Please try again.');
+      console.error('Form submission error:', {
+        error,
+        message: error.message,
+        stack: error.stack
+      });
+      setError(
+        `Failed to send message: ${error.message}. Please try again or contact me directly at ${CONTACT_FORM_EMAIL}.`
+      );
     } finally {
       setLoading(false);
     }

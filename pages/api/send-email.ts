@@ -82,7 +82,11 @@ export default async function handler(
     }
 
     if (!CONTACT_FORM_EMAIL) {
-      console.error('CONTACT_FORM_EMAIL is missing in environment');
+      console.error('CONTACT_FORM_EMAIL is missing in environment:', { 
+        CONTACT_FORM_EMAIL_SET: !!CONTACT_FORM_EMAIL,
+        IS_DEVELOPMENT,
+        NODE_ENV: process.env.NODE_ENV
+      });
       return res.status(500).json({ 
         message: 'Email service configuration error',
         details: 'Recipient email is missing'
@@ -90,7 +94,14 @@ export default async function handler(
     }
 
     const recipientEmail = CONTACT_FORM_EMAIL;
-    console.log('Sending email to:', recipientEmail);
+    console.log('Email configuration:', {
+      from: 'Contact Form <hi@romainboboe.com>',
+      to: recipientEmail,
+      replyTo: email,
+      IS_DEVELOPMENT,
+      RESEND_API_KEY_SET: !!RESEND_API_KEY,
+      RESEND_API_KEY_VALID: RESEND_API_KEY?.startsWith('re_')
+    });
 
     const result = await resend.emails.send({
       from: 'Contact Form <hi@romainboboe.com>',
