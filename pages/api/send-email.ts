@@ -21,17 +21,47 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://romainboboe.com';
 
+// Validate environment
+function validateEnvironment() {
+  const issues = [];
+  
+  if (!RESEND_API_KEY) {
+    issues.push('RESEND_API_KEY is missing');
+  } else if (!RESEND_API_KEY.startsWith('re_')) {
+    issues.push('RESEND_API_KEY is invalid format');
+  }
+  
+  if (!CONTACT_FORM_EMAIL) {
+    issues.push('CONTACT_FORM_EMAIL is missing');
+  }
+  
+  if (!IS_DEVELOPMENT && !SITE_URL) {
+    issues.push('NEXT_PUBLIC_SITE_URL is missing in production');
+  }
+  
+  return {
+    isValid: issues.length === 0,
+    issues
+  };
+}
+
 // Initialize Resend
 let resend: Resend | null = null;
 try {
-  if (!RESEND_API_KEY) {
-    console.error('RESEND_API_KEY is not defined');
-    throw new Error('RESEND_API_KEY is not defined');
-  }
-  
-  if (!RESEND_API_KEY.startsWith('re_')) {
-    console.error('Invalid API key format. Must start with "re_"');
-    throw new Error('Invalid API key format. Must start with "re_"');
+  const envValidation = validateEnvironment();
+  console.log('Environment validation:', {
+    isValid: envValidation.isValid,
+    issues: envValidation.issues,
+    isDevelopment: IS_DEVELOPMENT,
+    siteUrl: SITE_URL,
+    apiUrl: API_URL,
+    hasContactEmail: !!CONTACT_FORM_EMAIL,
+    hasResendKey: !!RESEND_API_KEY,
+    nodeEnv: process.env.NODE_ENV
+  });
+
+  if (!envValidation.isValid) {
+    throw new Error(`Environment validation failed: ${envValidation.issues.join(', ')}`);
   }
   
   resend = new Resend(RESEND_API_KEY);
@@ -150,6 +180,31 @@ export default async function handler(
       NODE_ENV: process.env.NODE_ENV,
       host: req.headers.host
     });
+
+    // Validate production setup
+    if (!IS_DEVELOPMENT) {
+      const productionDomain = CONTACT_FORM_EMAIL?.split('@')[1];
+      console.log('Production email configuration:', {
+        fromEmail,
+        toEmail,
+        productionDomain,
+        host: req.headers.host,
+        siteUrl: SITE_URL,
+        apiUrl: API_URL
+      });
+
+      if (productionDomain !== 'romainboboe.com') {
+        console.error('Production domain mismatch:', {
+          expectedDomain: 'romainboboe.com',
+          actualDomain: productionDomain
+        });
+        return res.status(500).json({
+          success: false,
+          message: 'Email configuration error',
+          error: 'Invalid email domain configuration'
+        });
+      }
+    }
 
     const emailData = {
       from: fromEmail,
