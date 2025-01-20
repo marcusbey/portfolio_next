@@ -23,7 +23,6 @@ async function generateFavicons() {
       .resize(size, size)
       .toFile(path.join(process.cwd(), 'public', filename));
     
-    console.log(`Generated ${filename}`);
   }
 
   // Generate ICO file
@@ -31,5 +30,4 @@ async function generateFavicons() {
     .resize(32, 32)
     .toFile(path.join(process.cwd(), 'public', 'favicon.ico'));
   
-  console.log('Generated favicon.ico');
 }

@@ -116,8 +116,6 @@ export const Contact = () => {
         ? `${window.location.origin}/api/send-email`
         : '/api/send-email';
 
-      console.log('Sending email request to:', apiUrl);
-      
       setLoading(true);
       setError(null);
       setSuccess(null);
@@ -134,12 +132,6 @@ export const Contact = () => {
       });
 
       const data = await response.json();
-      console.log('Response:', { 
-        status: response.status, 
-        ok: response.ok,
-        data,
-        headers: Object.fromEntries(response.headers.entries())
-      });
 
       if (!response.ok) {
         throw new Error(
