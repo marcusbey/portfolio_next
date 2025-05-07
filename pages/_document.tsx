@@ -1,4 +1,5 @@
 import { Head, Html, Main, NextScript } from "next/document";
+import Script from "next/script";
 
 export default function Document() {
   return (
@@ -32,18 +33,28 @@ export default function Document() {
         {/* Security Headers */}
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="referrer" content="strict-origin" />
-        <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://nownownow.io https://datafa.st; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.github.com https://api.resend.com;" />
+        <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://nownownow.io https://widget.nownownow.io https://datafa.st; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.github.com https://api.resend.com;" />
       </Head>
       <body>
         <Main />
         <NextScript />
-        <script
-          defer
+        <Script
+          strategy="afterInteractive"
           data-website-id="671fb5ee22bbce1bee81d68c"
           data-domain="romainboboe.com"
-          src="https://datafa.st/js/script.js">
-        </script>
-        <script defer type="module" src="https://widget.nownownow.io/now-widget.js" now-data-org-id="67tiEuEkC3G" now-data-token="Njd0aUV1RWtDM0cuMTc0NjU4MDkyNjYyOS5yb21haW5ib2JvZS5jb20uZGVmYXVsdC13aWRnZXQtc2VjcmV0" now-data-theme="dark" now-data-position="left" now-data-button-color="#8c1ce9" now-data-button-size="90"></script>
+          src="https://datafa.st/js/script.js"
+        />
+        <Script 
+          strategy="afterInteractive"
+          type="module" 
+          src="https://widget.nownownow.io/now-widget.js"
+          now-data-org-id="67tiEuEkC3G"
+          now-data-token="Njd0aUV1RWtDM0cuMTc0NjU4MDkyNjYyOS5yb21haW5ib2JvZS5jb20uZGVmYXVsdC13aWRnZXQtc2VjcmV0"
+          now-data-theme="dark" 
+          now-data-position="left" 
+          now-data-button-color="#8c1ce9" 
+          now-data-button-size="90"
+        />
       </body>
     </Html>
   );
