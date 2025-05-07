@@ -46,6 +46,7 @@ export const Container = (props: any) => {
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />
+        <script defer type="module" src="http://widget.nownownow.io/now-widget.js" now-data-org-id="67tiEuEkC3G" now-data-token="Njd0aUV1RWtDM0cuMTc0NjU4MDkyNjYyOS5yb21haW5ib2JvZS5jb20uZGVmYXVsdC13aWRnZXQtc2VjcmV0" now-data-theme="dark" now-data-position="left" now-data-button-color="#8c1ce9" now-data-button-size="90"></script>
       </Head>
 
       <main className={clsx("min-h-screen antialiased bg-zinc-900", className)}>
