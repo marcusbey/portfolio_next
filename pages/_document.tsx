@@ -41,8 +41,9 @@ export default function Document() {
           defer
           data-website-id="671fb5ee22bbce1bee81d68c"
           data-domain="romainboboe.com"
-          src="https://datafa.st/js/script.js"
-        ></script>
+          src="https://datafa.st/js/script.js">
+        </script>
+        <script defer type="module" src="https://widget.nownownow.io/now-widget.js" now-data-org-id="67tiEuEkC3G" now-data-token="Njd0aUV1RWtDM0cuMTc0NjU4MDkyNjYyOS5yb21haW5ib2JvZS5jb20uZGVmYXVsdC13aWRnZXQtc2VjcmV0" now-data-theme="dark" now-data-position="left" now-data-button-color="#8c1ce9" now-data-button-size="90"></script>
       </body>
     </Html>
   );
