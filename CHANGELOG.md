@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### feat: add vercel analytics
+- Integrated Vercel Analytics into the application by adding the `<Analytics />` component to `pages/_app.tsx`.
+
 ### feat: add alternative email implementation
 - Added Nodemailer implementation as an alternative to Resend
 - Created new API endpoint for Nodemailer email sending

@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { useRouter } from "next/router";
+import { Analytics } from "@vercel/analytics/react"; // Added Vercel Analytics import
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -26,5 +27,10 @@ export default function App({ Component, pageProps }: AppProps) {
       router.events.off("routeChangeError", handleStop);
     };
   }, [router]);
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <Component {...pageProps} />
+      <Analytics /> {/* Added Vercel Analytics component */}
+    </>
+  );
 }
