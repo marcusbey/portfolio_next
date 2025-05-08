@@ -48,11 +48,9 @@ const resend = (() => {
 })();
 
 const getEmailConfig = (senderEmail: string) => ({
-  from: config.isDevelopment 
-    ? 'onboarding@resend.dev'
-    : senderEmail,
+  from: 'onboarding@resend.dev', 
   to: config.isDevelopment ? config.devEmail : config.contactEmail,
-  replyTo: senderEmail,
+  replyTo: senderEmail, 
   subject: `${config.isDevelopment ? '[TEST] ' : ''}📨  New Message from RomainBOBOE.com`
 });
 
