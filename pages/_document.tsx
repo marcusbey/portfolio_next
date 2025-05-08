@@ -33,6 +33,7 @@ export default function Document() {
         {/* Security Headers */}
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="referrer" content="strict-origin" />
+      </Head>
       <body>
         <Main />
         <NextScript />
