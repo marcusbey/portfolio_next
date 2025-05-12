@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### style: improve page layout with max-width constraint
+- Added max-w-7xl container in main layout component
+- Applied responsive padding with px-4 sm:px-6 lg:px-8
+- Enhanced overall page readability and content focus
+
 ### security: implement comprehensive Content-Security-Policy
 - Added Content-Security-Policy meta tag to _document.tsx
 - Updated server-level CSP headers in next.config.mjs (preferred approach)
