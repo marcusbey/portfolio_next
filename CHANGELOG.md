@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### security: add Content-Security-Policy for external widgets
+- Added Content-Security-Policy meta tag to _document.tsx
+- Configured script-src directive to allow 'self', https://widget.nownownow.io, and https://datafa.st/
+- Enhanced security while maintaining widget and analytics functionality
+
 ### feat: add vercel analytics
 - Integrated Vercel Analytics into the application by adding the `<Analytics />` component to `pages/_app.tsx`.
 
