@@ -53,7 +53,8 @@ export default function Document() {
           now-data-position="left" 
           now-data-button-color="#06b5d4" 
           now-data-button-size="90"
-          now-data-csp-compatible="true" 
+          now-data-csp-compatible="true"
+          now-data-extreme-csp-mode="true" 
         />
       </body>
     </Html>
