@@ -33,7 +33,7 @@ export default function Document() {
         {/* Security Headers */}
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="referrer" content="strict-origin" />
-        <meta httpEquiv="Content-Security-Policy" content="script-src 'self' https://widget.nownownow.io https://datafa.st" />
+        <meta httpEquiv="Content-Security-Policy" content="script-src 'self' https://widget.nownownow.io https://www.nownownow.io https://datafa.st" />
       </Head>
       <body>
         <Main />
