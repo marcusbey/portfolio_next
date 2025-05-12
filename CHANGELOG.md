@@ -2,9 +2,11 @@
 
 ## [Unreleased]
 
-### security: add Content-Security-Policy for external widgets
+### security: implement comprehensive Content-Security-Policy
 - Added Content-Security-Policy meta tag to _document.tsx
-- Configured script-src directive to allow 'self', https://widget.nownownow.io, and https://datafa.st/
+- Updated server-level CSP headers in next.config.mjs (preferred approach)
+- Configured script-src directive to allow 'self', widget.nownownow.io, www.nownownow.io, and datafa.st
+- Added connect-src directive to allow API connections to datafa.st and www.nownownow.io
 - Enhanced security while maintaining widget and analytics functionality
 
 ### feat: add vercel analytics
