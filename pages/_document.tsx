@@ -46,9 +46,7 @@ export default function Document() {
         <Script 
           strategy="afterInteractive"
           type="module" 
-          // src="https://widget.nownownow.io/now-widget.js"
-          src="http://localhost:5173/dist/now-widget.js"
-          now-data-org-id="67tiEuEkC3G"
+          src="https://widget.nownownow.io/now-widget.js"
           now-data-token="Njd0aUV1RWtDM0cuMTc0NjU4MDkyNjYyOS5yb21haW5ib2JvZS5jb20uZGVmYXVsdC13aWRnZXQtc2VjcmV0"
           now-data-theme="dark" 
           now-data-position="left" 
