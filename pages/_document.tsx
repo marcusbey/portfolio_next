@@ -33,7 +33,7 @@ export default function Document() {
         {/* Security Headers */}
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="referrer" content="strict-origin" />
-        <meta httpEquiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel.app https://widget.nownownow.io https://www.nownownow.io https://datafa.st" />
+        {/* CSP is now configured via next.config.mjs server-side headers */}
       </Head>
       <body>
         <Main />
