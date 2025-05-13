@@ -26,10 +26,10 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel.app https://nownownow.io https://widget.nownownow.io https://www.nownownow.io https://datafa.st http://localhost:5173",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel.app https://nownownow.io https://widget.nownownow.io https://www.nownownow.io https://datafa.st http://localhost:5173 http://localhost:3000 https://va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline' https://widget.nownownow.io",
               "img-src 'self' data: https: blob:",
-              "connect-src 'self' https://api.github.com https://api.resend.com https://www.nownownow.io https://widget.nownownow.io https://datafa.st http://localhost:5173"
+              "connect-src 'self' https://api.github.com https://api.resend.com https://www.nownownow.io https://widget.nownownow.io https://datafa.st http://localhost:5173 http://localhost:3000 https://va.vercel-scripts.com ws://localhost:3000 wss://localhost:3000"
             ].join('; ')
           },
           {
