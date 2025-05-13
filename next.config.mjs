@@ -29,7 +29,7 @@ const nextConfig = {
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel.app https://nownownow.io https://widget.nownownow.io https://www.nownownow.io https://datafa.st",
               "style-src 'self' 'unsafe-inline' https://widget.nownownow.io",
               "img-src 'self' data: https: blob:",
-              "connect-src 'self' https://api.github.com https://api.resend.com https://www.nownownow.io https://widget.nownownow.io"
+              "connect-src 'self' https://api.github.com https://api.resend.com https://datafa.st https://www.google-analytics.com https://*.vercel.app https://nownownow.io https://widget.nownownow.io https://www.nownownow.io",
             ].join('; ')
           },
           {
