@@ -47,6 +47,7 @@ export default function Document() {
           strategy="afterInteractive"
           type="module" 
           src="https://widget.nownownow.io/now-widget.js"
+          now-data-org-id="67tiEuEkC3G"
           now-data-token="Njd0aUV1RWtDM0cuMTc0NjU4MDkyNjYyOS5yb21haW5ib2JvZS5jb20uZGVmYXVsdC13aWRnZXQtc2VjcmV0"
           now-data-theme="dark" 
           now-data-position="left" 
