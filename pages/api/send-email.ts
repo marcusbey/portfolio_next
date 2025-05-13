@@ -23,7 +23,9 @@ const config = {
   resendKey: process.env.RESEND_API_KEY,
   contactEmail: process.env.CONTACT_FORM_EMAIL || 'hi@romainboboe.com',
   devEmail: 'rboboe@gmail.com',
+  ownerEmail: 'rboboe@gmail.com', // Owner's verified email for testing
   isDevelopment: process.env.NODE_ENV === 'development',
+  verifiedDomain: 'romainboboe.com', // Domain is already verified in Resend
   allowedOrigins: [
     'http://localhost:3000',
     'http://localhost:3001',
@@ -47,12 +49,15 @@ const resend = (() => {
   }
 })();
 
-const getEmailConfig = (senderEmail: string) => ({
-  from: 'onboarding@resend.dev', 
-  to: config.isDevelopment ? config.devEmail : config.contactEmail,
-  replyTo: senderEmail, 
-  subject: `${config.isDevelopment ? '[TEST] ' : ''}📨  New Message from RomainBOBOE.com`
-});
+const getEmailConfig = (senderEmail: string) => {
+  // We can use the verified domain address now as 'from'
+  return {
+    from: `contact@${config.verifiedDomain}`,
+    to: config.contactEmail,
+    replyTo: senderEmail,
+    subject: `${config.isDevelopment ? '[TEST] ' : ''}📨  New Message from RomainBOBOE.com`
+  };
+};
 
 const validateRequest = (email?: string, message?: string) => {
   const errors = {
@@ -108,8 +113,16 @@ export default async function handler(
         details: { email: null, message: null }
       });
     }
+    
+    // Domain is now verified, so we can skip the verification check
+    // And allow emails from any address
 
     const emailConfig = getEmailConfig(email);
+    console.log('📧 Sending email with config:', { 
+      ...emailConfig, 
+      messagePreview: message.substring(0, 20) + '...' 
+    });
+    
     const result = await resend.emails.send({
       ...emailConfig,
       to: emailConfig.to as string,
@@ -117,8 +130,11 @@ export default async function handler(
     });
 
     if (result.error) {
+      console.error('❌ Resend API Error:', result.error);
       throw new Error(result.error.message);
     }
+    
+    console.log('✅ Email sent successfully:', result.data?.id);
 
     return res.status(200).json({
       success: true,

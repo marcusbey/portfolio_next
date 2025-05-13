@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### fix: update contact form to use verified domain
+- Updated send-email API to properly use the verified domain
+- Removed email sending restrictions for non-owner emails
+- Improved email configuration to use contact@romainboboe.com as sender
+- Enhanced error handling for better user feedback
+
 ### style: improve page layout with max-width constraint
 - Added max-w-7xl container in main layout component
 - Applied responsive padding with px-4 sm:px-6 lg:px-8

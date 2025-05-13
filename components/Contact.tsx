@@ -134,9 +134,16 @@ export const Contact = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to send message: ${data.error || data.message || 'Unknown error'}`
-        );
+        // Special handling for Resend API restriction error
+        if (data.error === 'Resend API restriction') {
+          setError(`${data.message}`);
+        } else {
+          throw new Error(
+            `Failed to send message: ${data.error || data.message || 'Unknown error'}`
+          );
+        }
+        setLoading(false);
+        return;
       }
 
       if (!data.success) {
