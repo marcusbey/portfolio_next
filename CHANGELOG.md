@@ -2,18 +2,6 @@
 
 ## [Unreleased]
 
-### security: enhance Content-Security-Policy for local development
-- Added WebSocket connection permissions for Next.js hot module replacement
-- Added additional domains required for local development (localhost:3000, va.vercel-scripts.com)
-- Removed conflicting CSP meta tag from _document.tsx
-- Consolidated all CSP rules in next.config.mjs for better maintainability
-
-### security: fix Content-Security-Policy configuration
-- Fixed inconsistent CSP directives between next.config.mjs and _document.tsx
-- Added missing 'unsafe-eval' and 'unsafe-inline' directives to CSP meta tag
-- Added missing domains to connect-src directive
-- Resolved JavaScript evaluation errors during development
-
 ### style: improve page layout with max-width constraint
 - Added max-w-7xl container in main layout component
 - Applied responsive padding with px-4 sm:px-6 lg:px-8

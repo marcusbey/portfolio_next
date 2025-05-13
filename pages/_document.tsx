@@ -33,7 +33,6 @@ export default function Document() {
         {/* Security Headers */}
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="referrer" content="strict-origin" />
-        {/* CSP is now configured via next.config.mjs server-side headers */}
       </Head>
       <body>
         <Main />
