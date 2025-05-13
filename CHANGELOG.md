@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### security: fix Content-Security-Policy configuration
+- Fixed inconsistent CSP directives between next.config.mjs and _document.tsx
+- Added missing 'unsafe-eval' and 'unsafe-inline' directives to CSP meta tag
+- Added missing domains to connect-src directive
+- Resolved JavaScript evaluation errors during development
+
 ### style: improve page layout with max-width constraint
 - Added max-w-7xl container in main layout component
 - Applied responsive padding with px-4 sm:px-6 lg:px-8

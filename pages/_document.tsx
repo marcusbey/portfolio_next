@@ -33,7 +33,7 @@ export default function Document() {
         {/* Security Headers */}
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="referrer" content="strict-origin" />
-        <meta httpEquiv="Content-Security-Policy" content="script-src 'self' https://widget.nownownow.io https://www.nownownow.io https://datafa.st" />
+        <meta httpEquiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel.app https://widget.nownownow.io https://www.nownownow.io https://datafa.st" />
       </Head>
       <body>
         <Main />
@@ -47,7 +47,8 @@ export default function Document() {
         <Script 
           strategy="afterInteractive"
           type="module" 
-          src="https://widget.nownownow.io/now-widget.js"
+          // src="https://widget.nownownow.io/now-widget.js"
+          src="http://localhost:5173/dist/now-widget.js"
           now-data-org-id="67tiEuEkC3G"
           now-data-token="Njd0aUV1RWtDM0cuMTc0NjU4MDkyNjYyOS5yb21haW5ib2JvZS5jb20uZGVmYXVsdC13aWRnZXQtc2VjcmV0"
           now-data-theme="dark" 
