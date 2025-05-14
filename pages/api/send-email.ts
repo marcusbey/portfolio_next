@@ -23,9 +23,9 @@ const config = {
   resendKey: process.env.RESEND_API_KEY,
   contactEmail: process.env.CONTACT_FORM_EMAIL || 'hi@romainboboe.com',
   devEmail: 'rboboe@gmail.com',
-  ownerEmail: 'rboboe@gmail.com', // Owner's verified email for testing
+  ownerEmail: 'rboboe@gmail.com', 
   isDevelopment: process.env.NODE_ENV === 'development',
-  verifiedDomain: 'romainboboe.com', // Domain is already verified in Resend
+  verifiedDomain: 'romainboboe.com',
   allowedOrigins: [
     'http://localhost:3000',
     'http://localhost:3001',
