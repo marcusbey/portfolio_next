@@ -40,3 +40,5 @@ next-env.d.ts
 
 # windsurf rules
 .windsurfrules
+
+/lib/generated/prisma

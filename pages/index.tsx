@@ -1,6 +1,6 @@
 import { Container } from "@/components/Container";
 import { Hero } from "@/components/Hero";
-import { Projects } from "@/components/Projects";
+import { ProjectsV2 } from "@/components/ProjectsV2";
 import { getUserRepositories } from "@/lib/github";
 import { LatestRepos } from "@/components/LatestRepos";
 import { Repository } from "@/types/repos";
@@ -32,7 +32,7 @@ export default function Home({
       <h1 className="text-2xl md:text-3xl text-white font-bold max-w-5xl mx-auto px-8  mt-40">
         I've been building a lot of things
       </h1>
-      <Projects />
+      <ProjectsV2 />
 
       {/* 
       <h1 className="text-2xl md:text-3xl text-white font-bold max-w-5xl mx-auto px-8 mt-40">
