@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Project } from '@prisma/client'
-import { EyeIcon, EyeSlashIcon, ArrowUpIcon, ArrowDownIcon, PencilIcon, CheckIcon, XMarkIcon, CameraIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, EyeSlashIcon, ArrowUpIcon, ArrowDownIcon, PencilIcon, CheckIcon, XMarkIcon, CameraIcon, PhotoIcon, PlusIcon } from '@heroicons/react/24/outline'
 
 interface ProjectWithTechnologies extends Project {
   technologies: Array<{ id: string; technology: string }>
@@ -8,7 +8,15 @@ interface ProjectWithTechnologies extends Project {
 
 interface ProjectTableProps {
   projects: ProjectWithTechnologies[]
-  onProjectUpdate: (projectId: string, updates: { isVisible?: boolean; displayOrder?: number; url?: string }) => void
+  onProjectUpdate: (projectId: string, updates: { 
+    isVisible?: boolean; 
+    displayOrder?: number; 
+    url?: string;
+    description?: string;
+    longDescription?: string;
+    techStack?: string[];
+    imageUrls?: string[];
+  }) => void
   onRegenerateScreenshot?: (projectId: string) => void
 }
 
@@ -16,6 +24,11 @@ export function ProjectTable({ projects, onProjectUpdate, onRegenerateScreenshot
   const [filter, setFilter] = useState<'all' | 'visible' | 'hidden'>('all')
   const [editingUrl, setEditingUrl] = useState<string | null>(null)
   const [newUrl, setNewUrl] = useState('')
+  const [editingDescription, setEditingDescription] = useState<string | null>(null)
+  const [newDescription, setNewDescription] = useState('')
+  const [editingLongDescription, setEditingLongDescription] = useState<string | null>(null)
+  const [newLongDescription, setNewLongDescription] = useState('')
+  const [showImageManager, setShowImageManager] = useState<string | null>(null)
   
   const filteredProjects = projects.filter(project => {
     if (filter === 'visible') return project.isVisible
@@ -56,6 +69,38 @@ export function ProjectTable({ projects, onProjectUpdate, onRegenerateScreenshot
   const handleUrlCancel = () => {
     setEditingUrl(null)
     setNewUrl('')
+  }
+
+  const handleDescriptionEdit = (project: ProjectWithTechnologies) => {
+    setEditingDescription(project.id)
+    setNewDescription(project.description || '')
+  }
+
+  const handleDescriptionSave = (projectId: string) => {
+    onProjectUpdate(projectId, { description: newDescription })
+    setEditingDescription(null)
+    setNewDescription('')
+  }
+
+  const handleDescriptionCancel = () => {
+    setEditingDescription(null)
+    setNewDescription('')
+  }
+
+  const handleLongDescriptionEdit = (project: ProjectWithTechnologies) => {
+    setEditingLongDescription(project.id)
+    setNewLongDescription(project.longDescription || '')
+  }
+
+  const handleLongDescriptionSave = (projectId: string) => {
+    onProjectUpdate(projectId, { longDescription: newLongDescription })
+    setEditingLongDescription(null)
+    setNewLongDescription('')
+  }
+
+  const handleLongDescriptionCancel = () => {
+    setEditingLongDescription(null)
+    setNewLongDescription('')
   }
 
   return (
@@ -99,6 +144,9 @@ export function ProjectTable({ projects, onProjectUpdate, onRegenerateScreenshot
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Technologies
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Description
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status

@@ -61,7 +61,7 @@ export class ScreenshotGenerator {
 
       // Block unnecessary resources to speed up loading
       await page.setRequestInterception(true)
-      page.on('request', (req) => {
+      page.on('request', (req: any) => {
         const resourceType = req.resourceType()
         if (resourceType === 'stylesheet' || resourceType === 'font') {
           req.continue()

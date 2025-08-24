@@ -1,5 +1,5 @@
 import { Container } from "@/components/Container";
-import { ProjectsV2 } from "@/components/ProjectsV2";
+import { EnhancedProjectsV2 } from "@/components/EnhancedProjectsV2";
 
 export default function ProjectsPage() {
   return (
@@ -16,7 +16,7 @@ export default function ProjectsPage() {
         </p>
       </div>
 
-      <ProjectsV2 />
+      <EnhancedProjectsV2 />
     </Container>
   );
 }

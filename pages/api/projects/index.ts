@@ -21,13 +21,17 @@ export default async function handler(
 
       const formattedProjects = projects.map(project => ({
         id: project.id,
-        title: project.name,
+        name: project.name,
+        title: project.name, // Keep for backward compatibility
         description: project.description || '',
-        longDescription: project.longDescription || project.description || '',
-        image: project.imageUrl || '',
+        longDescription: project.longDescription || '',
+        imageUrl: project.imageUrl || '',
+        imageUrls: project.imageUrls || [],
+        image: project.imageUrl || '', // Keep for backward compatibility
         url: project.url || project.liveUrl || '',
         githubUrl: project.githubUrl,
-        stack: project.technologies.map(tech => tech.technology),
+        techStack: project.techStack || [],
+        stack: project.technologies.map(tech => tech.technology), // Keep for backward compatibility
         projectType: project.projectType || 'Web App',
         category: project.category || 'fullstack',
         status: project.status || 'completed',

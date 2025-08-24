@@ -18,7 +18,9 @@ model Project {
   longDescription String? @map("long_description")
   url            String?
   imageUrl       String?  @map("image_url")
+  imageUrls      String[] @default([]) @map("image_urls") // Multiple images for carousel
   framework      String?
+  techStack      String[] @default([]) @map("tech_stack") // Detailed tech stack with icons
   projectType    String?  @map("project_type") // e.g., "Web App", "Mobile App", "API", "Library"
   status         String   @default("completed") // "completed", "in_progress", "archived"
   githubUrl      String?  @map("github_url")

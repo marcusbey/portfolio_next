@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Project } from '@prisma/client'
 import useSWR from 'swr'
-import { ProjectTable } from './ProjectTable'
+import { EnhancedProjectTable } from './EnhancedProjectTable'
 import { SyncStatus } from './SyncStatus'
 
 interface ProjectWithTechnologies extends Project {
@@ -47,7 +47,15 @@ export function ProjectDashboard() {
     }
   }
 
-  const handleProjectUpdate = async (projectId: string, updates: { isVisible?: boolean; displayOrder?: number }) => {
+  const handleProjectUpdate = async (projectId: string, updates: { 
+    isVisible?: boolean; 
+    displayOrder?: number; 
+    url?: string;
+    description?: string;
+    longDescription?: string;
+    techStack?: string[];
+    imageUrls?: string[];
+  }) => {
     try {
       const response = await fetch('/api/projects/admin', {
         method: 'PATCH',
@@ -67,6 +75,38 @@ export function ProjectDashboard() {
       mutate() // Refresh the data
     } catch (error) {
       console.error('Update error:', error)
+    }
+  }
+
+  const handleRegenerateScreenshot = async (projectId: string) => {
+    try {
+      setSyncMessage('Regenerating screenshot...')
+      
+      const response = await fetch('/api/projects/generate-screenshots', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          projectIds: [projectId],
+          force: true,
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error('Screenshot generation failed')
+      }
+      
+      const result = await response.json()
+      setSyncMessage(`Screenshot regenerated successfully!`)
+      mutate() // Refresh the data
+      
+      // Clear message after 3 seconds
+      setTimeout(() => setSyncMessage(''), 3000)
+    } catch (error) {
+      setSyncMessage('Screenshot generation failed. Please try again.')
+      console.error('Screenshot generation error:', error)
+      setTimeout(() => setSyncMessage(''), 3000)
     }
   }
 
@@ -101,9 +141,10 @@ export function ProjectDashboard() {
       />
 
       {data?.projects ? (
-        <ProjectTable 
+        <EnhancedProjectTable 
           projects={data.projects}
           onProjectUpdate={handleProjectUpdate}
+          onRegenerateScreenshot={handleRegenerateScreenshot}
         />
       ) : (
         <div className="bg-white rounded-lg shadow p-8">

@@ -2,8 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
 import { createVercelClient, VercelProject } from '@/lib/vercel'
 import { generateProjectScreenshot } from '@/lib/screenshot'
-import { urlValidator } from '@/lib/url-validator'
-import { getSmartScreenshotOrchestrator, ProjectInput } from '@/lib/smart-screenshot-orchestrator'
+// Removed broken imports - using simple sync approach
 
 async function syncProjectsFromVercel() {
   const vercel = createVercelClient()
@@ -53,8 +52,8 @@ async function syncProjectsFromVercel() {
         candidateUrls.push(`https://${projectName}.vercel.app`)
       }
       
-      // Find the best accessible URL
-      const liveUrl = await urlValidator.findBestURL(candidateUrls)
+      // Use the first candidate URL (priority order)
+      const liveUrl = candidateUrls[0] || null
       
       // Check if project already exists
       let project = await prisma.project.findUnique({
@@ -97,24 +96,16 @@ async function syncProjectsFromVercel() {
           try {
             console.log(`🚀 Generating smart screenshot for project: ${vercelProject.name}`)
             
-            const projectInput: ProjectInput = {
-              id: vercelProject.id,
-              name: vercelProject.name,
-              vercelUrl: liveUrl || undefined,
-              githubUrl: enhancedInfo.githubUrl || undefined,
-              framework: vercelProject.framework || undefined,
-              technologies: enhancedInfo.topics || [],
-              description: enhancedInfo.description || undefined
-            }
-
-            const orchestrator = getSmartScreenshotOrchestrator()
-            const smartResult = await orchestrator.generateSmartScreenshot(projectInput)
-            
-            if (smartResult.success && smartResult.finalImagePath) {
-              screenshotPath = smartResult.finalImagePath
-              console.log(`✅ Generated smart screenshot for ${vercelProject.name} using strategy: ${smartResult.strategy}`)
-            } else {
-              console.warn(`⚠️ Smart screenshot failed for ${vercelProject.name}: ${smartResult.error}`)
+            // Generate simple screenshot if URL is available
+            if (liveUrl) {
+              try {
+                screenshotPath = await generateProjectScreenshot(liveUrl, vercelProject.name)
+                if (screenshotPath) {
+                  console.log(`✅ Generated screenshot for ${vercelProject.name}`)
+                }
+              } catch (error) {
+                console.warn(`⚠️ Screenshot failed for ${vercelProject.name}:`, error)
+              }
             }
           } catch (error) {
             console.error(`Failed to generate smart screenshot for ${vercelProject.name}:`, error)
@@ -151,7 +142,7 @@ async function syncProjectsFromVercel() {
           }
         }
         
-        const projectDetails = getProjectDetails(vercelProject.framework, enhancedInfo.primaryLanguage)
+        const projectDetails = getProjectDetails(vercelProject.framework || null, enhancedInfo.primaryLanguage || null)
         
         // Determine if project should be featured based on criteria
         const shouldBeFeatured = (
