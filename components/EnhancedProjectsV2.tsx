@@ -78,7 +78,7 @@ const ImageCarousel: React.FC<{ images: string[]; projectName: string }> = ({ im
       <img
         src={images?.[0] || '/placeholder-project.jpg'}
         alt={projectName}
-        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+        className="w-full h-72 object-cover transition-transform duration-300 group-hover:scale-105"
       />
     )
   }
@@ -92,7 +92,7 @@ const ImageCarousel: React.FC<{ images: string[]; projectName: string }> = ({ im
   }
 
   return (
-    <div className="relative h-64 overflow-hidden">
+    <div className="relative h-72 overflow-hidden">
       <img
         src={images[currentIndex]}
         alt={`${projectName} - Image ${currentIndex + 1}`}
@@ -200,10 +200,10 @@ export const EnhancedProjectsV2 = () => {
   if (loading) {
     return (
       <div className="py-12">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4">
           <div className="animate-pulse">
             <div className="h-8 bg-zinc-700 rounded w-64 mb-8 mx-auto"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
               {[...Array(4)].map((_, i) => (
                 <div key={i} className="bg-zinc-800 rounded-lg h-80"></div>
               ))}
@@ -228,7 +228,7 @@ export const EnhancedProjectsV2 = () => {
 
   return (
     <div className="py-12">
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4">
         {error && (
           <div className="mb-4 p-3 bg-yellow-900/20 border border-yellow-700/30 rounded-md">
             <p className="text-yellow-400 text-sm">
@@ -247,7 +247,7 @@ export const EnhancedProjectsV2 = () => {
         </motion.h2>
 
         {/* 2-column grid for larger cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
           {projects.map((project, index) => {
             const allImages = [project.imageUrl, ...(project.imageUrls || [])].filter(Boolean)
             
@@ -286,9 +286,9 @@ export const EnhancedProjectsV2 = () => {
                   </div>
 
                   {/* Content */}
-                  <div className="p-6">
+                  <div className="p-8">
                     <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-xl font-semibold text-zinc-50 group-hover:text-cyan-400 transition-colors">
+                      <h3 className="text-2xl font-bold text-zinc-50 group-hover:text-cyan-400 transition-colors">
                         {project.name}
                       </h3>
                       <a
@@ -303,7 +303,7 @@ export const EnhancedProjectsV2 = () => {
                     </div>
 
                     {/* Description */}
-                    <p className="text-zinc-300 text-sm leading-relaxed mb-4 line-clamp-3">
+                    <p className="text-zinc-300 text-base leading-relaxed mb-4 line-clamp-3">
                       {project.description || 'No description available'}
                     </p>
 
@@ -313,7 +313,7 @@ export const EnhancedProjectsV2 = () => {
                         <summary className="text-cyan-400 text-sm cursor-pointer hover:text-cyan-300 transition-colors">
                           Read more...
                         </summary>
-                        <p className="text-zinc-400 text-sm mt-2 leading-relaxed">
+                        <p className="text-zinc-400 text-base mt-2 leading-relaxed">
                           {project.longDescription}
                         </p>
                       </details>
