@@ -43,7 +43,7 @@ export class ScreenshotGenerator {
       projectName,
       width = 1200,
       height = 630,
-      waitTime = 3000
+      waitTime = 5000
     } = options
 
     try {
@@ -52,27 +52,126 @@ export class ScreenshotGenerator {
       const page = await this.browser.newPage()
       
       // Set viewport
-      await page.setViewport({ width, height })
+      await page.setViewport({ width, height, deviceScaleFactor: 1 })
       
       // Set user agent to avoid bot detection
       await page.setUserAgent(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       )
-      
-      // Navigate to the URL with timeout
-      await page.goto(url, {
-        waitUntil: 'networkidle0',
-        timeout: 30000,
+
+      // Block unnecessary resources to speed up loading
+      await page.setRequestInterception(true)
+      page.on('request', (req) => {
+        const resourceType = req.resourceType()
+        if (resourceType === 'stylesheet' || resourceType === 'font') {
+          req.continue()
+        } else if (resourceType === 'image' && req.url().includes('favicon')) {
+          req.abort()
+        } else {
+          req.continue()
+        }
       })
+
+      // Add Vercel bypass if it's a Vercel URL and we have the secret
+      let finalUrl = url
+      if (process.env.VERCEL_BYPASS_SECRET && (url.includes('.vercel.app') || url.includes('vercel.com'))) {
+        const separator = url.includes('?') ? '&' : '?'
+        finalUrl = `${url}${separator}_vercel_share=${process.env.VERCEL_BYPASS_SECRET}`
+        console.log(`🔑 Using Vercel bypass for: ${projectName}`)
+      }
+
+      console.log(`🔍 Attempting to capture screenshot for ${projectName}: ${finalUrl}`)
       
-      // Wait for additional content to load
-      await new Promise(resolve => setTimeout(resolve, waitTime))
+      // Navigate to the URL with timeout and error handling
+      const response = await page.goto(finalUrl, {
+        waitUntil: 'networkidle2',
+        timeout: 45000,
+      })
+
+      if (!response || !response.ok()) {
+        console.warn(`⚠️ Page response not OK for ${url}: ${response?.status()}`)
+      }
+
+      // Check if we're on a login or error page
+      const pageTitle = await page.title()
+      const pageContent = await page.content()
+      const currentUrl = page.url()
+      
+      const isLoginPage = pageTitle.toLowerCase().includes('login') || 
+                          pageTitle.toLowerCase().includes('sign in') ||
+                          (pageTitle === 'Vercel' && pageContent.includes('Continue with')) || // Only exact "Vercel" title with login content
+                          pageContent.includes('Log in to Vercel') ||
+                          pageContent.includes('authentication required') ||
+                          pageContent.includes('Login to continue') ||
+                          pageContent.includes('continue to vercel') ||
+                          currentUrl.includes('vercel.com/login') ||
+                          currentUrl.includes('/auth/') || // More specific auth path
+                          // Check for the specific Vercel login screen
+                          pageContent.includes('data-testid="login"') ||
+                          (pageContent.includes('Enter your email address') && pageContent.includes('Continue with'))
+
+      const isErrorPage = pageTitle.toLowerCase().includes('error') ||
+                          pageTitle.toLowerCase().includes('not found') ||
+                          pageContent.includes('404') ||
+                          pageContent.includes('Page not found') ||
+                          pageContent.includes('This page could not be found')
+
+      if (isLoginPage) {
+        console.warn(`⚠️ Detected login page for ${projectName}`)
+        console.warn(`   URL: ${url}`)
+        console.warn(`   Final URL: ${currentUrl}`)
+        console.warn(`   Page title: ${pageTitle}`)
+        await page.close()
+        return null
+      }
+
+      if (isErrorPage) {
+        console.warn(`⚠️ Detected error page for ${projectName}, skipping screenshot`)
+        await page.close()
+        return null
+      }
+
+      // Wait for content to load and any animations to complete
+      await page.waitForTimeout(waitTime)
+
+      // Try to wait for main content (common selectors)
+      try {
+        await page.waitForSelector('main, #app, #root, .app, .container, body > div', {
+          timeout: 10000
+        })
+      } catch (error) {
+        console.log(`📸 No main content selector found for ${projectName}, proceeding with screenshot`)
+      }
+
+      // Hide cookie banners and other overlays
+      await page.evaluate(() => {
+        const elementsToHide = [
+          '[class*="cookie"]',
+          '[class*="banner"]',
+          '[class*="popup"]',
+          '[class*="modal"]',
+          '[id*="cookie"]',
+          '[id*="banner"]',
+          '.cookie-consent',
+          '.gdpr-banner'
+        ]
+        
+        elementsToHide.forEach(selector => {
+          const elements = document.querySelectorAll(selector)
+          elements.forEach(el => {
+            if (el instanceof HTMLElement) {
+              el.style.display = 'none'
+            }
+          })
+        })
+      })
       
       // Take screenshot
       const screenshot = await page.screenshot({
         type: 'jpeg',
-        quality: 80,
+        quality: 85,
         fullPage: false,
+        clip: { x: 0, y: 0, width, height }
       })
       
       await page.close()

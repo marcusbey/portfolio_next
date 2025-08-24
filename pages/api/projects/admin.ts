@@ -24,7 +24,7 @@ export default async function handler(
     }
   } else if (req.method === 'PATCH') {
     try {
-      const { projectId, isVisible, displayOrder } = req.body
+      const { projectId, isVisible, displayOrder, url } = req.body
 
       if (!projectId) {
         return res.status(400).json({ error: 'Project ID is required' })
@@ -36,6 +36,10 @@ export default async function handler(
       }
       if (typeof displayOrder === 'number') {
         updateData.displayOrder = displayOrder
+      }
+      if (typeof url === 'string') {
+        updateData.url = url
+        updateData.liveUrl = url // Also update liveUrl field
       }
 
       const updatedProject = await prisma.project.update({

@@ -23,11 +23,20 @@ export default async function handler(
         id: project.id,
         title: project.name,
         description: project.description || '',
+        longDescription: project.longDescription || project.description || '',
         image: project.imageUrl || '',
-        url: project.url || '',
+        url: project.url || project.liveUrl || '',
+        githubUrl: project.githubUrl,
         stack: project.technologies.map(tech => tech.technology),
+        projectType: project.projectType || 'Web App',
+        category: project.category || 'fullstack',
+        status: project.status || 'completed',
+        difficulty: project.difficulty || 'intermediate',
+        featured: project.featured || false,
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
+        projectStartDate: project.projectStartDate,
+        projectEndDate: project.projectEndDate,
       }))
 
       res.status(200).json({ projects: formattedProjects })

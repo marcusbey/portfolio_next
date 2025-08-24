@@ -1,57 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://romainboboe.com/about-enhanced</loc>
+    <lastmod>2025-08-23T12:36:37.434Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
     <loc>https://romainboboe.com/about</loc>
-    <lastmod>2025-08-17T04:28:08.964Z</lastmod>
+    <lastmod>2025-08-23T12:36:37.434Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/events</loc>
-    <lastmod>2025-08-17T04:28:08.964Z</lastmod>
+    <lastmod>2025-08-23T12:36:37.434Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com</loc>
-    <lastmod>2025-08-17T04:28:08.964Z</lastmod>
+    <lastmod>2025-08-23T12:36:37.434Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/medias</loc>
-    <lastmod>2025-08-17T04:28:08.964Z</lastmod>
+    <lastmod>2025-08-23T12:36:37.434Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/projects</loc>
-    <lastmod>2025-08-17T04:28:08.964Z</lastmod>
+    <lastmod>2025-08-23T12:36:37.434Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/admin/login</loc>
-    <lastmod>2025-08-17T04:28:08.964Z</lastmod>
+    <lastmod>2025-08-23T12:36:37.434Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/admin/projects</loc>
-    <lastmod>2025-08-17T04:28:08.964Z</lastmod>
+    <lastmod>2025-08-23T12:36:37.434Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/blogs</loc>
-    <lastmod>2025-08-17T04:28:08.964Z</lastmod>
+    <lastmod>2025-08-23T12:36:37.434Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>

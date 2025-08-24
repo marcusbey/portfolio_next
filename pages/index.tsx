@@ -51,20 +51,31 @@ export default function Home({
 }
 
 export async function getStaticProps() {
-  // FIXME: Add back the github api call
-  // const res = await fetch("https://api.github.com/users/tylerdurden");
-  // const data = await res.json();
+  try {
+    // FIXME: Add back the github api call
+    // const res = await fetch("https://api.github.com/users/tylerdurden");
+    // const data = await res.json();
 
-  // FIXME: Add back the rss feed generation
+    // FIXME: Add back the rss feed generation
 
-  const data = await getUserRepositories("manuarora700");
+    const data = await getUserRepositories("marcusbey");
+    const blogs = await getAllBlogs();
 
-  return {
-    props: {
-      repos: data,
-      blogs: (await getAllBlogs())
-        .slice(0, 4)
-        .map(({ component, ...meta }) => meta),
-    },
-  };
+    return {
+      props: {
+        repos: data || [],
+        blogs: blogs
+          .slice(0, 4)
+          .map(({ component, ...meta }) => meta),
+      },
+    };
+  } catch (error) {
+    console.error('Error in getStaticProps:', error);
+    return {
+      props: {
+        repos: [],
+        blogs: [],
+      },
+    };
+  }
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Project } from '@prisma/client'
-import { EyeIcon, EyeSlashIcon, ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, EyeSlashIcon, ArrowUpIcon, ArrowDownIcon, PencilIcon, CheckIcon, XMarkIcon, CameraIcon } from '@heroicons/react/24/outline'
 
 interface ProjectWithTechnologies extends Project {
   technologies: Array<{ id: string; technology: string }>
@@ -8,11 +8,14 @@ interface ProjectWithTechnologies extends Project {
 
 interface ProjectTableProps {
   projects: ProjectWithTechnologies[]
-  onProjectUpdate: (projectId: string, updates: { isVisible?: boolean; displayOrder?: number }) => void
+  onProjectUpdate: (projectId: string, updates: { isVisible?: boolean; displayOrder?: number; url?: string }) => void
+  onRegenerateScreenshot?: (projectId: string) => void
 }
 
-export function ProjectTable({ projects, onProjectUpdate }: ProjectTableProps) {
+export function ProjectTable({ projects, onProjectUpdate, onRegenerateScreenshot }: ProjectTableProps) {
   const [filter, setFilter] = useState<'all' | 'visible' | 'hidden'>('all')
+  const [editingUrl, setEditingUrl] = useState<string | null>(null)
+  const [newUrl, setNewUrl] = useState('')
   
   const filteredProjects = projects.filter(project => {
     if (filter === 'visible') return project.isVisible
@@ -37,6 +40,22 @@ export function ProjectTable({ projects, onProjectUpdate }: ProjectTableProps) {
       onProjectUpdate(project.id, { displayOrder: newOrder })
       onProjectUpdate(visibleProjects[currentIndex + 1].id, { displayOrder: project.displayOrder })
     }
+  }
+
+  const handleUrlEdit = (project: ProjectWithTechnologies) => {
+    setEditingUrl(project.id)
+    setNewUrl(project.url || '')
+  }
+
+  const handleUrlSave = (projectId: string) => {
+    onProjectUpdate(projectId, { url: newUrl })
+    setEditingUrl(null)
+    setNewUrl('')
+  }
+
+  const handleUrlCancel = () => {
+    setEditingUrl(null)
+    setNewUrl('')
   }
 
   return (
@@ -70,10 +89,13 @@ export function ProjectTable({ projects, onProjectUpdate }: ProjectTableProps) {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Project
+                Preview
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Framework
+                Project Details
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Type & Category
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Technologies
@@ -90,52 +112,180 @@ export function ProjectTable({ projects, onProjectUpdate }: ProjectTableProps) {
             {filteredProjects.map((project) => (
               <tr key={project.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">
-                      {project.name}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {project.description}
-                    </div>
-                    {project.url && (
-                      <a
-                        href={project.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-800"
-                      >
-                        View Live →
-                      </a>
+                  <div className="w-16 h-12 bg-gray-200 rounded overflow-hidden">
+                    {project.imageUrl ? (
+                      <img
+                        src={project.imageUrl}
+                        alt={project.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA2NCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yOCAyMkMyOCAyMC44OTU0IDI4Ljg5NTQgMjAgMzAgMjBIMzRDMzUuMTA0NiAyMCAzNiAyMC44OTU0IDM2IDIyVjI2QzM2IDI3LjEwNDYgMzUuMTA0NiAyOCAzNCAyOEgzMEMyOC44OTU0IDI4IDI4IDI3LjEwNDYgMjggMjZWMjJaIiBmaWxsPSIjOUI5QkExIi8+Cjwvc3ZnPgo=';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                        </svg>
+                      </div>
                     )}
                   </div>
                 </td>
+                <td className="px-6 py-4">
+                  <div className="max-w-xs">
+                    <div className="flex items-center space-x-2">
+                      <div className="text-sm font-medium text-gray-900 truncate">
+                        {project.name}
+                      </div>
+                      {project.featured && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-cyan-100 to-blue-100 text-cyan-800">
+                          ⭐ Featured
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-sm text-gray-500 line-clamp-2">
+                      {project.description || 'No description'}
+                    </div>
+                    <div className="mt-2 space-x-2">
+                      {editingUrl === project.id ? (
+                        <div className="flex items-center space-x-2 mt-2">
+                          <input
+                            type="url"
+                            value={newUrl}
+                            onChange={(e) => setNewUrl(e.target.value)}
+                            className="text-xs border rounded px-2 py-1 w-48"
+                            placeholder="https://example.com"
+                          />
+                          <button
+                            onClick={() => handleUrlSave(project.id)}
+                            className="text-green-600 hover:text-green-800"
+                            title="Save URL"
+                          >
+                            <CheckIcon className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={handleUrlCancel}
+                            className="text-red-600 hover:text-red-800"
+                            title="Cancel"
+                          >
+                            <XMarkIcon className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center space-x-2">
+                          {project.url ? (
+                            <>
+                              <a
+                                href={project.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-600 hover:text-blue-800"
+                              >
+                                Live →
+                              </a>
+                              <button
+                                onClick={() => handleUrlEdit(project)}
+                                className="text-gray-400 hover:text-gray-600"
+                                title="Edit URL"
+                              >
+                                <PencilIcon className="w-3 h-3" />
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              onClick={() => handleUrlEdit(project)}
+                              className="text-xs text-gray-400 hover:text-gray-600"
+                            >
+                              + Add URL
+                            </button>
+                          )}
+                          {project.githubUrl && (
+                            <a
+                              href={project.githubUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-gray-600 hover:text-gray-800"
+                            >
+                              GitHub →
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">
+                      Created: {new Date(project.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                    {project.framework || 'Unknown'}
-                  </span>
+                  <div className="space-y-1">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {project.projectType || 'Web App'}
+                    </span>
+                    <div>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                        {project.category || 'fullstack'}
+                      </span>
+                    </div>
+                    {project.framework && (
+                      <div>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                          {project.framework}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="flex flex-wrap gap-1">
-                    {project.technologies.map((tech) => (
+                  <div className="flex flex-wrap gap-1 max-w-xs">
+                    {project.technologies.slice(0, 3).map((tech) => (
                       <span
                         key={tech.id}
-                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
                       >
                         {tech.technology}
                       </span>
                     ))}
+                    {project.technologies.length > 3 && (
+                      <span className="text-xs text-gray-500">
+                        +{project.technologies.length - 3} more
+                      </span>
+                    )}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      project.isVisible
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {project.isVisible ? 'Visible' : 'Hidden'}
-                  </span>
+                  <div className="space-y-1">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        project.isVisible
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      {project.isVisible ? 'Visible' : 'Hidden'}
+                    </span>
+                    <div>
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          project.status === 'completed'
+                            ? 'bg-green-100 text-green-800'
+                            : project.status === 'in_progress'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
+                        {project.status || 'completed'}
+                      </span>
+                    </div>
+                    {project.featured && (
+                      <div>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          ⭐ Featured
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex items-center space-x-2">
@@ -150,6 +300,16 @@ export function ProjectTable({ projects, onProjectUpdate }: ProjectTableProps) {
                         <EyeIcon className="h-5 w-5" />
                       )}
                     </button>
+
+                    {onRegenerateScreenshot && project.url && (
+                      <button
+                        onClick={() => onRegenerateScreenshot(project.id)}
+                        className="text-gray-400 hover:text-cyan-600"
+                        title="Regenerate screenshot"
+                      >
+                        <CameraIcon className="h-5 w-5" />
+                      </button>
+                    )}
                     
                     {project.isVisible && (
                       <>

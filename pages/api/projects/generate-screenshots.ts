@@ -72,7 +72,7 @@ export default async function handler(
       
       // Update projects with screenshot paths
       const updatePromises = []
-      for (const [projectId, screenshotPath] of results.entries()) {
+      for (const [projectId, screenshotPath] of Array.from(results.entries())) {
         if (screenshotPath) {
           updatePromises.push(
             prisma.project.update({
@@ -116,7 +116,7 @@ export default async function handler(
       
       // Update projects with screenshot paths
       const updatePromises = []
-      for (const [projectId, screenshotPath] of results.entries()) {
+      for (const [projectId, screenshotPath] of Array.from(results.entries())) {
         if (screenshotPath) {
           updatePromises.push(
             prisma.project.update({
