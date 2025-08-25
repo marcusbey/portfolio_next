@@ -36,6 +36,9 @@ export function EnhancedProjectTable({
   const [newDescription, setNewDescription] = useState('')
   const [editingLongDescription, setEditingLongDescription] = useState<string | null>(null)
   const [newLongDescription, setNewLongDescription] = useState('')
+  const [editingImages, setEditingImages] = useState<string | null>(null)
+  const [newImageUrls, setNewImageUrls] = useState<string[]>([])
+  const [newImageUrl, setNewImageUrl] = useState('')
 
   const filteredProjects = projects.filter(project => {
     if (filter === 'visible') return project.isVisible
@@ -73,6 +76,39 @@ export function EnhancedProjectTable({
   const handleLongDescriptionCancel = () => {
     setEditingLongDescription(null)
     setNewLongDescription('')
+  }
+
+  const handleImagesEdit = (project: ProjectWithTechnologies) => {
+    setEditingImages(project.id)
+    const allImages = [project.imageUrl, ...(project.imageUrls || [])].filter(Boolean)
+    setNewImageUrls(allImages)
+    setNewImageUrl('')
+  }
+
+  const handleImageAdd = () => {
+    if (newImageUrl.trim()) {
+      setNewImageUrls([...newImageUrls, newImageUrl.trim()])
+      setNewImageUrl('')
+    }
+  }
+
+  const handleImageRemove = (index: number) => {
+    setNewImageUrls(newImageUrls.filter((_, i) => i !== index))
+  }
+
+  const handleImagesSave = (projectId: string) => {
+    // First image becomes the main imageUrl, rest go to imageUrls array
+    const [mainImage, ...additionalImages] = newImageUrls
+    onProjectUpdate(projectId, { imageUrls: additionalImages })
+    setEditingImages(null)
+    setNewImageUrls([])
+    setNewImageUrl('')
+  }
+
+  const handleImagesCancel = () => {
+    setEditingImages(null)
+    setNewImageUrls([])
+    setNewImageUrl('')
   }
 
   const getTechStackDisplay = (techStack: string[] = []) => {
@@ -132,33 +168,96 @@ export function EnhancedProjectTable({
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredProjects.map((project) => (
               <tr key={project.id} className="hover:bg-gray-50">
-                {/* Preview */}
+                {/* Preview & Images */}
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="relative">
-                    <div className="w-20 h-14 bg-gray-200 rounded overflow-hidden">
-                      {project.imageUrl ? (
-                        <img
-                          src={project.imageUrl}
-                          alt={project.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA2NCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yOCAyMkMyOCAyMC44OTU0IDI4Ljg5NTQgMjAgMzAgMjBIMzRDMzUuMTA0NiAyMCAzNiAyMC44OTU0IDM2IDIyVjI2QzM2IDI3LjEwNDYgMzUuMTA0NiAyOCAzNCAyOEgzMEMyOC44OTU0IDI4IDI4IDI3LjEwNDYgMjggMjZWMjJaIiBmaWxsPSIjOUI5QkExIi8+Cjwvc3ZnPgo=';
-                          }}
+                  {editingImages === project.id ? (
+                    <div className="w-64 space-y-3">
+                      {/* Image list */}
+                      <div className="space-y-2">
+                        {newImageUrls.map((url, index) => (
+                          <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
+                            <img src={url} alt={`Preview ${index + 1}`} className="w-10 h-8 object-cover rounded" />
+                            <div className="flex-1 text-xs text-gray-600 truncate">{url.substring(url.lastIndexOf('/') + 1)}</div>
+                            <button
+                              onClick={() => handleImageRemove(index)}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <XMarkIcon className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {/* Add new image */}
+                      <div className="flex space-x-2">
+                        <input
+                          type="url"
+                          value={newImageUrl}
+                          onChange={(e) => setNewImageUrl(e.target.value)}
+                          placeholder="Enter image URL..."
+                          className="flex-1 text-xs p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                         />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          <PhotoIcon className="w-6 h-6" />
+                        <button
+                          onClick={handleImageAdd}
+                          disabled={!newImageUrl.trim()}
+                          className="px-2 py-1 text-xs bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-300"
+                        >
+                          Add
+                        </button>
+                      </div>
+                      
+                      {/* Save/Cancel buttons */}
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleImagesSave(project.id)}
+                          className="text-green-600 hover:text-green-700"
+                        >
+                          <CheckIcon className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={handleImagesCancel}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <XMarkIcon className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="relative group">
+                      <div className="w-20 h-14 bg-gray-200 rounded overflow-hidden">
+                        {project.imageUrl ? (
+                          <img
+                            src={project.imageUrl}
+                            alt={project.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA2NCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yOCAyMkMyOCAyMC44OTU0IDI4Ljg5NTQgMjAgMzAgMjBIMzRDMzUuMTA0NiAyMCAzNiAyMC44OTU0IDM2IDIyVjI2QzM2IDI3LjEwNDYgMzUuMTA0NiAyOCAzNCAyOEgzMEMyOC44OTU0IDI4IDI4IDI3LjEwNDYgMjggMjZWMjJaIiBmaWxsPSIjOUI5QkExIi8+Cjwvc3ZnPgo=';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400">
+                            <PhotoIcon className="w-6 h-6" />
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Multiple images indicator */}
+                      {project.imageUrls && project.imageUrls.length > 0 && (
+                        <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                          +{project.imageUrls.length}
                         </div>
                       )}
+                      
+                      {/* Edit images button */}
+                      <button
+                        onClick={() => handleImagesEdit(project)}
+                        className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100"
+                      >
+                        <PencilIcon className="w-4 h-4 text-white" />
+                      </button>
                     </div>
-                    {/* Multiple images indicator */}
-                    {project.imageUrls && project.imageUrls.length > 0 && (
-                      <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                        +{project.imageUrls.length}
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </td>
 
                 {/* Project Name */}

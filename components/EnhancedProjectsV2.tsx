@@ -72,14 +72,25 @@ const techIcons: Record<string, React.ComponentType<{ className?: string }>> = {
 
 const ImageCarousel: React.FC<{ images: string[]; projectName: string }> = ({ images, projectName }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
   
   if (!images || images.length <= 1) {
     return (
-      <img
-        src={images?.[0] || '/placeholder-project.jpg'}
-        alt={projectName}
-        className="w-full h-72 object-cover transition-transform duration-300 group-hover:scale-105"
-      />
+      <div 
+        className="relative h-48 overflow-hidden group/image"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <img
+          src={images?.[0] || '/placeholder-project.jpg'}
+          alt={projectName}
+          className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-75"
+        />
+        {/* Single image overlay effect */}
+        <div className={`absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent transition-opacity duration-300 ${
+          isHovered ? 'opacity-100' : 'opacity-0'
+        }`} />
+      </div>
     )
   }
 
@@ -91,41 +102,88 @@ const ImageCarousel: React.FC<{ images: string[]; projectName: string }> = ({ im
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
   }
 
+  // Auto-cycle through images on hover
+  React.useEffect(() => {
+    let interval: NodeJS.Timeout
+    if (isHovered && images.length > 1) {
+      interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % images.length)
+      }, 1500) // Change image every 1.5 seconds
+    }
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [isHovered, images.length])
+
   return (
-    <div className="relative h-72 overflow-hidden">
-      <img
-        src={images[currentIndex]}
-        alt={`${projectName} - Image ${currentIndex + 1}`}
-        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-      />
+    <div 
+      className="relative h-48 overflow-hidden group/carousel"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Image container with stacked effect */}
+      <div className="relative w-full h-full">
+        {images.map((image, index) => (
+          <img
+            key={index}
+            src={image}
+            alt={`${projectName} - Image ${index + 1}`}
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out ${
+              index === currentIndex 
+                ? 'opacity-100 scale-100 z-10' 
+                : 'opacity-0 scale-105 z-0'
+            } ${
+              isHovered ? 'brightness-75 scale-110' : 'brightness-100 scale-100'
+            }`}
+          />
+        ))}
+      </div>
       
-      {/* Navigation buttons */}
-      <div className="absolute inset-0 flex items-center justify-between p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      {/* Animated overlay */}
+      <div className={`absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent transition-opacity duration-300 ${
+        isHovered ? 'opacity-100' : 'opacity-0'
+      }`} />
+      
+      {/* Navigation buttons with enhanced animations */}
+      <div className={`absolute inset-0 flex items-center justify-between p-3 transition-all duration-300 ${
+        isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+      }`}>
         <button
           onClick={prevImage}
-          className="bg-black/50 text-white p-1 rounded-full hover:bg-black/70 transition-colors"
+          className="bg-white/20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/30 transition-all duration-200 transform hover:scale-110 shadow-lg"
         >
           <ChevronLeftIcon className="w-4 h-4" />
         </button>
         <button
           onClick={nextImage}
-          className="bg-black/50 text-white p-1 rounded-full hover:bg-black/70 transition-colors"
+          className="bg-white/20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/30 transition-all duration-200 transform hover:scale-110 shadow-lg"
         >
           <ChevronRightIcon className="w-4 h-4" />
         </button>
       </div>
       
-      {/* Image indicators */}
-      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+      {/* Enhanced image indicators */}
+      <div className={`absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-2 transition-all duration-300 ${
+        isHovered ? 'opacity-100 translate-y-0' : 'opacity-70 translate-y-1'
+      }`}>
         {images.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`w-2 h-2 rounded-full transition-colors ${
-              index === currentIndex ? 'bg-white' : 'bg-white/50'
+            className={`transition-all duration-300 rounded-full ${
+              index === currentIndex 
+                ? 'w-8 h-2 bg-white shadow-md' 
+                : 'w-2 h-2 bg-white/60 hover:bg-white/80'
             }`}
           />
         ))}
+      </div>
+
+      {/* Image counter */}
+      <div className={`absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full transition-all duration-300 ${
+        isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
+      }`}>
+        {currentIndex + 1} / {images.length}
       </div>
     </div>
   )
@@ -135,41 +193,59 @@ const TechStack: React.FC<{ technologies: string[] }> = ({ technologies }) => {
   const displayTechs = technologies?.slice(0, 8) || []
   
   return (
-    <div className="flex flex-wrap gap-2 mt-4">
+    <div className="flex flex-wrap gap-1.5 mt-3">
       {displayTechs.map((tech, index) => {
         const IconComponent = techIcons[tech]
         return (
           <div
             key={index}
-            className="flex items-center space-x-1 bg-zinc-800/50 px-2 py-1 rounded-md border border-zinc-700/30 hover:border-cyan-500/30 transition-colors"
+            className="flex items-center space-x-1 bg-zinc-800/40 px-1.5 py-0.5 rounded border border-zinc-700/20 hover:border-cyan-500/20 transition-all duration-200 group/tech"
             title={tech}
           >
             {IconComponent ? (
-              <IconComponent className="w-3 h-3 text-cyan-400" />
+              <IconComponent className="w-2.5 h-2.5 text-zinc-500 group-hover/tech:text-cyan-400 transition-colors" />
             ) : (
-              <HiOutlineTerminal className="w-3 h-3 text-cyan-400" />
+              <HiOutlineTerminal className="w-2.5 h-2.5 text-zinc-500 group-hover/tech:text-cyan-400 transition-colors" />
             )}
-            <span className="text-xs text-zinc-300">{tech}</span>
+            <span className="text-xs text-zinc-400 group-hover/tech:text-zinc-300 transition-colors">{tech}</span>
           </div>
         )
       })}
       {technologies && technologies.length > 8 && (
-        <div className="flex items-center px-2 py-1 rounded-md bg-zinc-800/30 border border-zinc-700/20">
-          <span className="text-xs text-zinc-400">+{technologies.length - 8}</span>
+        <div className="flex items-center px-1.5 py-0.5 rounded bg-zinc-800/30 border border-zinc-700/20">
+          <span className="text-xs text-zinc-500">+{technologies.length - 8}</span>
         </div>
       )}
     </div>
   )
 }
 
-export const EnhancedProjectsV2 = () => {
+interface EnhancedProjectsV2Props {
+  projects?: ProjectData[]
+  loading?: boolean
+  error?: string | null
+}
+
+export const EnhancedProjectsV2: React.FC<EnhancedProjectsV2Props> = ({ 
+  projects: propProjects, 
+  loading: propLoading, 
+  error: propError 
+}) => {
   const [projects, setProjects] = useState<ProjectData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Use props if provided, otherwise fetch projects
+  const displayProjects = propProjects || projects
+  const displayLoading = propLoading !== undefined ? propLoading : loading
+  const displayError = propError !== undefined ? propError : error
+
   useEffect(() => {
-    fetchProjects()
-  }, [])
+    // Only fetch projects if not provided via props
+    if (!propProjects) {
+      fetchProjects()
+    }
+  }, [propProjects])
 
   const fetchProjects = async () => {
     try {
@@ -197,7 +273,7 @@ export const EnhancedProjectsV2 = () => {
     }
   }
 
-  if (loading) {
+  if (displayLoading) {
     return (
       <div className="py-12">
         <div className="max-w-7xl mx-auto px-4">
@@ -214,7 +290,7 @@ export const EnhancedProjectsV2 = () => {
     )
   }
 
-  if (error && projects.length === 0) {
+  if (displayError && displayProjects.length === 0) {
     return (
       <div className="py-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
@@ -229,7 +305,7 @@ export const EnhancedProjectsV2 = () => {
   return (
     <div className="py-12">
       <div className="max-w-7xl mx-auto px-4">
-        {error && (
+        {displayError && (
           <div className="mb-4 p-3 bg-yellow-900/20 border border-yellow-700/30 rounded-md">
             <p className="text-yellow-400 text-sm">
               ⚠️ Using cached projects due to API error
@@ -248,7 +324,7 @@ export const EnhancedProjectsV2 = () => {
 
         {/* 2-column grid for larger cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          {projects.map((project, index) => {
+          {displayProjects.map((project, index) => {
             const allImages = [project.imageUrl, ...(project.imageUrls || [])].filter(Boolean)
             
             return (
@@ -260,7 +336,7 @@ export const EnhancedProjectsV2 = () => {
                 whileHover={{ y: -5 }}
                 className="group"
               >
-                <div className="bg-zinc-900/80 border border-zinc-700/50 rounded-xl overflow-hidden shadow-2xl transition-all duration-300 group-hover:shadow-cyan-500/10 group-hover:border-cyan-500/30 group-hover:bg-zinc-900/90">
+                <div className="bg-zinc-900/60 border border-zinc-700/30 rounded-xl overflow-hidden transition-all duration-300 group-hover:border-cyan-500/20">
                   {/* Image Carousel */}
                   <div className="relative overflow-hidden">
                     <ImageCarousel images={allImages} projectName={project.name} />
@@ -286,9 +362,10 @@ export const EnhancedProjectsV2 = () => {
                   </div>
 
                   {/* Content */}
-                  <div className="p-8">
+                  <div className="relative bg-zinc-800/80">
+                    <div className="p-6">
                     <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-2xl font-bold text-zinc-50 group-hover:text-cyan-400 transition-colors">
+                      <h3 className="text-xl font-bold text-zinc-50 group-hover:text-cyan-400 transition-colors">
                         {project.name}
                       </h3>
                       <a
@@ -298,12 +375,12 @@ export const EnhancedProjectsV2 = () => {
                         className="text-zinc-400 hover:text-cyan-400 transition-colors ml-2 flex-shrink-0"
                         title="Visit project"
                       >
-                        <HiExternalLink className="w-5 h-5" />
+                        <HiExternalLink className="w-4 h-4" />
                       </a>
                     </div>
 
                     {/* Description */}
-                    <p className="text-zinc-300 text-base leading-relaxed mb-4 line-clamp-3">
+                    <p className="text-zinc-300 text-sm leading-relaxed mb-4 line-clamp-2">
                       {project.description || 'No description available'}
                     </p>
 
@@ -313,7 +390,7 @@ export const EnhancedProjectsV2 = () => {
                         <summary className="text-cyan-400 text-sm cursor-pointer hover:text-cyan-300 transition-colors">
                           Read more...
                         </summary>
-                        <p className="text-zinc-400 text-base mt-2 leading-relaxed">
+                        <p className="text-zinc-400 text-sm mt-2 leading-relaxed">
                           {project.longDescription}
                         </p>
                       </details>
@@ -323,7 +400,7 @@ export const EnhancedProjectsV2 = () => {
                     <TechStack technologies={project.techStack || []} />
 
                     {/* Project metadata */}
-                    <div className="flex justify-between items-center mt-4 pt-4 border-t border-zinc-700/30">
+                    <div className="flex justify-between items-center mt-3 pt-3 border-t border-zinc-700/30">
                       <div className="flex space-x-4 text-xs text-zinc-500">
                         {project.category && (
                           <span className="bg-zinc-800/50 px-2 py-1 rounded">
@@ -342,7 +419,7 @@ export const EnhancedProjectsV2 = () => {
                           href={project.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-zinc-400 hover:text-white transition-colors"
+                          className="text-zinc-500 hover:text-cyan-400 transition-colors"
                           title="View source code"
                         >
                           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -351,6 +428,7 @@ export const EnhancedProjectsV2 = () => {
                         </a>
                       )}
                     </div>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -358,7 +436,7 @@ export const EnhancedProjectsV2 = () => {
           })}
         </div>
 
-        {projects.length === 0 && !loading && (
+        {displayProjects.length === 0 && !displayLoading && (
           <div className="text-center py-12">
             <p className="text-zinc-400">No projects available at the moment.</p>
           </div>
