@@ -1,13 +1,13 @@
 {
   "functions": {
     "pages/api/**/*.ts": {
-      "maxDuration": 30
+      "maxDuration": 10
     },
     "pages/api/projects/generate-screenshots.ts": {
-      "maxDuration": 300
+      "maxDuration": 10
     },
     "pages/api/cron/sync-vercel-projects.ts": {
-      "maxDuration": 60
+      "maxDuration": 10
     }
   },
   "crons": [
