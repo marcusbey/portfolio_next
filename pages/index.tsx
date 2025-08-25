@@ -17,7 +17,7 @@ import {
   CogIcon
 } from "@heroicons/react/24/outline";
 
-// const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] }); // Updated for redeploy
 
 export default function Home({
   repos,
