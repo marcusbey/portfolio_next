@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Launch browser
     browser = await puppeteer.launch({
-      headless: 'new',
+      headless: true,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',

@@ -71,7 +71,7 @@ export default async function handler(
       )
       
       // Update projects with screenshot paths
-      const updatePromises = []
+      const updatePromises: Promise<any>[] = []
       results.forEach((screenshotPath, projectId) => {
         if (screenshotPath) {
           updatePromises.push(
@@ -115,7 +115,7 @@ export default async function handler(
       )
       
       // Update projects with screenshot paths
-      const updatePromises = []
+      const updatePromises: Promise<any>[] = []
       results.forEach((screenshotPath, projectId) => {
         if (screenshotPath) {
           updatePromises.push(

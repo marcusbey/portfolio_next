@@ -80,7 +80,7 @@ export function EnhancedProjectTable({
 
   const handleImagesEdit = (project: ProjectWithTechnologies) => {
     setEditingImages(project.id)
-    const allImages = [project.imageUrl, ...(project.imageUrls || [])].filter(Boolean)
+    const allImages = [project.imageUrl, ...(project.imageUrls || [])].filter(Boolean) as string[]
     setNewImageUrls(allImages)
     setNewImageUrl('')
   }

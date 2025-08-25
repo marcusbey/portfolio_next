@@ -2,63 +2,84 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://romainboboe.com/about-enhanced</loc>
-    <lastmod>2025-08-24T16:23:58.751Z</lastmod>
+    <lastmod>2025-08-25T07:16:19.227Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/about</loc>
-    <lastmod>2025-08-24T16:23:58.752Z</lastmod>
+    <lastmod>2025-08-25T07:16:19.228Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://romainboboe.com/architecture</loc>
+    <lastmod>2025-08-25T07:16:19.228Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://romainboboe.com/contact</loc>
+    <lastmod>2025-08-25T07:16:19.228Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/events</loc>
-    <lastmod>2025-08-24T16:23:58.752Z</lastmod>
+    <lastmod>2025-08-25T07:16:19.228Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://romainboboe.com/hobbies</loc>
+    <lastmod>2025-08-25T07:16:19.228Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com</loc>
-    <lastmod>2025-08-24T16:23:58.752Z</lastmod>
+    <lastmod>2025-08-25T07:16:19.228Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/medias</loc>
-    <lastmod>2025-08-24T16:23:58.752Z</lastmod>
+    <lastmod>2025-08-25T07:16:19.228Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/projects</loc>
-    <lastmod>2025-08-24T16:23:58.752Z</lastmod>
+    <lastmod>2025-08-25T07:16:19.228Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/admin/login</loc>
-    <lastmod>2025-08-24T16:23:58.752Z</lastmod>
+    <lastmod>2025-08-25T07:16:19.228Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/admin/projects</loc>
-    <lastmod>2025-08-24T16:23:58.752Z</lastmod>
+    <lastmod>2025-08-25T07:16:19.228Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://romainboboe.com/blogs</loc>
-    <lastmod>2025-08-24T16:23:58.752Z</lastmod>
+    <lastmod>2025-08-25T07:16:19.228Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
