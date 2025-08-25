@@ -402,32 +402,22 @@ export default function ProjectsPage() {
         </div>
       </div>
 
-      {/* Additional Metrics */}
+      {/* Personal Touch */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
-        className="max-w-6xl mx-auto px-4 py-12"
+        className="max-w-4xl mx-auto px-4 py-12 text-center"
       >
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="text-center">
-            <div className="text-4xl font-bold text-cyan-400 mb-2">100%</div>
-            <p className="text-zinc-400 text-sm">Client Satisfaction</p>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-cyan-400 mb-2">48h</div>
-            <p className="text-zinc-400 text-sm">Average Response</p>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-cyan-400 mb-2">99.9%</div>
-            <p className="text-zinc-400 text-sm">Uptime Guarantee</p>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-cyan-400 mb-2">5★</div>
-            <p className="text-zinc-400 text-sm">Quality Rating</p>
-          </div>
-        </div>
+        <h3 className="text-2xl font-bold text-zinc-50 mb-4">
+          Behind Every Project
+        </h3>
+        <p className="text-zinc-400 text-lg leading-relaxed">
+          Each project you see here represents late nights, countless iterations, and the excitement 
+          of solving real problems. I don't just write code—I craft experiences that people love to use. 
+          From the first sketch to the final deployment, it's all about bringing ideas to life. ✨
+        </p>
       </motion.div>
 
       {/* Technology Highlights */}
@@ -471,48 +461,67 @@ export default function ProjectsPage() {
         </div>
       </motion.div>
 
-      {/* Achievements */}
+      {/* My Journey */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
-        className="max-w-4xl mx-auto px-4 py-16"
+        className="max-w-5xl mx-auto px-4 py-16"
       >
         <h2 className="text-3xl md:text-4xl font-bold text-zinc-50 mb-12 text-center">
-          Development Milestones
+          My Coding Journey
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {achievements.map((achievement, index) => (
-            <motion.div
-              key={achievement.title}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="text-center"
-            >
-              <div className="relative mb-6">
-                <div className="w-20 h-20 mx-auto bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-full flex items-center justify-center border border-cyan-500/30">
-                  <ChartBarIcon className="w-8 h-8 text-cyan-400" />
-                </div>
-              </div>
-              <div className="text-4xl font-bold text-zinc-50 mb-2">
-                {achievement.value}
-              </div>
-              <h3 className="text-lg font-medium text-zinc-300 mb-2">
-                {achievement.title}
-              </h3>
-              <p className="text-zinc-400 text-sm">
-                {achievement.description}
-              </p>
-            </motion.div>
-          ))}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center p-6 bg-zinc-900/30 rounded-lg border border-zinc-700/30"
+          >
+            <div className="text-6xl mb-4">🚀</div>
+            <div className="text-2xl font-bold text-zinc-50 mb-2">2007</div>
+            <h3 className="text-lg font-medium text-zinc-300 mb-2">Started with Web Design</h3>
+            <p className="text-zinc-400 text-sm">
+              Fell in love with creating beautiful web experiences
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="text-center p-6 bg-zinc-900/30 rounded-lg border border-zinc-700/30"
+          >
+            <div className="text-6xl mb-4">💡</div>
+            <div className="text-2xl font-bold text-zinc-50 mb-2">Today</div>
+            <h3 className="text-lg font-medium text-zinc-300 mb-2">Full-Stack + AI</h3>
+            <p className="text-zinc-400 text-sm">
+              Building intelligent applications that make a difference
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="text-center p-6 bg-zinc-900/30 rounded-lg border border-zinc-700/30"
+          >
+            <div className="text-6xl mb-4">🎯</div>
+            <div className="text-2xl font-bold text-zinc-50 mb-2">Always</div>
+            <h3 className="text-lg font-medium text-zinc-300 mb-2">Learning & Growing</h3>
+            <p className="text-zinc-400 text-sm">
+              Every project teaches me something new
+            </p>
+          </motion.div>
         </div>
       </motion.div>
 
-      {/* Development Philosophy */}
+      {/* What Drives Me */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -520,28 +529,28 @@ export default function ProjectsPage() {
         viewport={{ once: true }}
         className="max-w-4xl mx-auto px-4 py-16 text-center"
       >
-        <LightBulbIcon className="w-12 h-12 text-cyan-400 mx-auto mb-6" />
+        <div className="text-6xl mb-6">🔥</div>
         <h2 className="text-3xl md:text-4xl font-bold text-zinc-50 mb-6">
-          Development Philosophy
+          What Gets Me Excited
         </h2>
         <p className="text-zinc-400 text-lg leading-relaxed mb-8">
-          "Every project is an opportunity to learn something new, solve a meaningful problem, 
-          or push the boundaries of what's possible with code. I believe in writing clean, 
-          maintainable code that not only works today but can evolve with tomorrow's needs. 
-          The best applications are those that users love to use and developers love to maintain."
+          I love that moment when everything clicks together—when a complex problem becomes 
+          an elegant solution, when users say "wow, this just works!", or when I discover 
+          a new technology that changes everything. Coding isn't just my job, it's my playground. 
+          Every bug is a puzzle, every feature is a story, and every user is someone I want to delight.
         </p>
-        <div className="flex flex-wrap justify-center gap-4 text-sm">
-          <span className="px-4 py-2 bg-zinc-800/50 text-zinc-300 rounded-full border border-zinc-700/50">
-            Clean Code
+        <div className="flex flex-wrap justify-center gap-3 text-sm">
+          <span className="px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-300 rounded-full border border-cyan-500/20">
+            💡 Problem Solving
           </span>
-          <span className="px-4 py-2 bg-zinc-800/50 text-zinc-300 rounded-full border border-zinc-700/50">
-            User-Centered Design
+          <span className="px-4 py-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 text-green-300 rounded-full border border-green-500/20">
+            🚀 Building Cool Stuff
           </span>
-          <span className="px-4 py-2 bg-zinc-800/50 text-zinc-300 rounded-full border border-zinc-700/50">
-            Continuous Learning
+          <span className="px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-300 rounded-full border border-purple-500/20">
+            📚 Learning New Things
           </span>
-          <span className="px-4 py-2 bg-zinc-800/50 text-zinc-300 rounded-full border border-zinc-700/50">
-            Innovation Focus
+          <span className="px-4 py-2 bg-gradient-to-r from-orange-500/10 to-red-500/10 text-orange-300 rounded-full border border-orange-500/20">
+            😊 Making Users Happy
           </span>
         </div>
       </motion.div>

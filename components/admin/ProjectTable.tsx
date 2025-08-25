@@ -287,18 +287,45 @@ export function ProjectTable({ projects, onProjectUpdate, onRegenerateScreenshot
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-wrap gap-1 max-w-xs">
-                    {project.technologies.slice(0, 3).map((tech) => (
-                      <span
-                        key={tech.id}
-                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                      >
-                        {tech.technology}
-                      </span>
-                    ))}
-                    {project.technologies.length > 3 && (
-                      <span className="text-xs text-gray-500">
-                        +{project.technologies.length - 3} more
-                      </span>
+                    {/* Display techStack array first (more comprehensive) */}
+                    {project.techStack && project.techStack.length > 0 ? (
+                      <>
+                        {project.techStack.slice(0, 4).map((tech, index) => (
+                          <span
+                            key={`tech-${index}`}
+                            className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                        {project.techStack.length > 4 && (
+                          <span className="text-xs text-gray-500">
+                            +{project.techStack.length - 4} more
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      /* Fallback to technologies relations if techStack is empty */
+                      <>
+                        {project.technologies.slice(0, 3).map((tech) => (
+                          <span
+                            key={tech.id}
+                            className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                          >
+                            {tech.technology}
+                          </span>
+                        ))}
+                        {project.technologies.length > 3 && (
+                          <span className="text-xs text-gray-500">
+                            +{project.technologies.length - 3} more
+                          </span>
+                        )}
+                        {project.technologies.length === 0 && (
+                          <span className="text-xs text-red-500">
+                            No tech stack
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
                 </td>

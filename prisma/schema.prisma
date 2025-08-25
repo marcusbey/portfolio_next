@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,39 +8,36 @@ datasource db {
 }
 
 model Project {
-  id             String   @id @default(uuid())
-  vercelId       String?  @unique @map("vercel_id")
-  name           String
-  description    String?
-  longDescription String? @map("long_description")
-  url            String?
-  imageUrl       String?  @map("image_url")
-  imageUrls      String[] @default([]) @map("image_urls") // Multiple images for carousel
-  framework      String?
-  techStack      String[] @default([]) @map("tech_stack") // Detailed tech stack with icons
-  projectType    String?  @map("project_type") // e.g., "Web App", "Mobile App", "API", "Library"
-  status         String   @default("completed") // "completed", "in_progress", "archived"
-  githubUrl      String?  @map("github_url")
-  liveUrl        String?  @map("live_url")
-  demoUrl        String?  @map("demo_url")
-  featured       Boolean  @default(false)
-  difficulty     String?  // "beginner", "intermediate", "advanced"
-  category       String?  // "frontend", "backend", "fullstack", "mobile", "ai"
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-  projectStartDate DateTime? @map("project_start_date")
-  projectEndDate   DateTime? @map("project_end_date")
-  isVisible      Boolean  @default(true) @map("is_visible") // Changed default to true
-  displayOrder   Int      @default(0) @map("display_order")
-  
-  // Smart screenshot metadata
-  manualUrls     String[] @default([]) @map("manual_urls") // Manual URL overrides
-  screenshotStrategy String? @map("screenshot_strategy") // "smart_screenshot", "fallback_readme", etc.
-  screenshotMetadata Json? @map("screenshot_metadata") // Additional metadata from screenshot generation
-  lastScreenshotAt DateTime? @map("last_screenshot_at") // When screenshot was last generated
-  
-  technologies ProjectTechnology[]
-  
+  id                 String              @id @default(uuid())
+  vercelId           String?             @unique @map("vercel_id")
+  name               String
+  description        String?
+  url                String?
+  imageUrl           String?             @map("image_url")
+  framework          String?
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  isVisible          Boolean             @default(true) @map("is_visible")
+  displayOrder       Int                 @default(0) @map("display_order")
+  category           String?
+  demoUrl            String?             @map("demo_url")
+  difficulty         String?
+  featured           Boolean             @default(false)
+  githubUrl          String?             @map("github_url")
+  liveUrl            String?             @map("live_url")
+  longDescription    String?             @map("long_description")
+  projectEndDate     DateTime?           @map("project_end_date")
+  projectStartDate   DateTime?           @map("project_start_date")
+  projectType        String?             @map("project_type")
+  status             String              @default("completed")
+  lastScreenshotAt   DateTime?           @map("last_screenshot_at")
+  manualUrls         String[]            @default([]) @map("manual_urls")
+  screenshotMetadata Json?               @map("screenshot_metadata")
+  screenshotStrategy String?             @map("screenshot_strategy")
+  imageUrls          String[]            @default([]) @map("image_urls")
+  techStack          String[]            @default([]) @map("tech_stack")
+  technologies       ProjectTechnology[]
+
   @@map("projects")
 }
 
@@ -51,10 +45,9 @@ model ProjectTechnology {
   id         String  @id @default(uuid())
   projectId  String  @map("project_id")
   technology String
-  category   String? // "frontend", "backend", "database", "deployment", "testing"
-  level      String? // "primary", "secondary", "minor"
-  
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  
+  category   String?
+  level      String?
+  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
   @@map("project_technologies")
 }

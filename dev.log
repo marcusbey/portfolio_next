@@ -1,0 +1,53 @@
+
+> next-tailwind-landing-boilerplate@0.1.0 dev
+> next dev
+
+(node:22340) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:22341) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[32mready[39m - started server on 0.0.0.0:3000, url: http://localhost:3000
+[36minfo[39m  - Loaded env from /Users/marcusbey/Desktop/02-CS/05-Startup/romainboboe_website/.env
+[33mwarn[39m  - [1mYou have enabled experimental feature (scrollRestoration) in next.config.mjs.[22m
+[33mwarn[39m  - Experimental features are not covered by semver, and may cause unexpected or broken application behavior. Use at your own risk.
+
+[36minfo[39m  - automatically enabled Fast Refresh for 1 custom loader
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[35mevent[39m - compiled client and server successfully in 1001 ms (192 modules)
+[36mwait[39m  - compiling...
+[35mevent[39m - compiled successfully in 160 ms (148 modules)
+[36mwait[39m  - compiling /_error (client and server)...
+[35mevent[39m - compiled client and server successfully in 408 ms (193 modules)
+[33mwarn[39m  - Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[36mwait[39m  - compiling /hobbies (client and server)...
+[35mevent[39m - compiled client and server successfully in 487 ms (882 modules)
+[33mwarn[39m  - Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[36mwait[39m  - compiling /api/projects (client and server)...
+[35mevent[39m - compiled successfully in 23 ms (96 modules)
+[36mwait[39m  - compiling /about...
+[35mevent[39m - compiled client and server successfully in 298 ms (914 modules)
+[36mwait[39m  - compiling...
+[35mevent[39m - compiled successfully in 277 ms (808 modules)
+[36mwait[39m  - compiling...
+[35mevent[39m - compiled successfully in 182 ms (481 modules)
+[36mwait[39m  - compiling /...
+[35mevent[39m - compiled client and server successfully in 702 ms (1032 modules)
+Found blog files: [
+  [32m'what-is-a-blog-anyway/index.mdx'[39m,
+  [32m'what-is-a-website-template/index.mdx'[39m
+]
+[36mwait[39m  - compiling /api/projects (client and server)...
+[35mevent[39m - compiled successfully in 71 ms (134 modules)
+[36mwait[39m  - compiling /projects (client and server)...
+[35mevent[39m - compiled client and server successfully in 441 ms (1046 modules)
+Found blog files: [
+  [32m'what-is-a-blog-anyway/index.mdx'[39m,
+  [32m'what-is-a-website-template/index.mdx'[39m
+]
+Found blog files: [
+  [32m'what-is-a-website-template/index.mdx'[39m,
+  [32m'what-is-a-blog-anyway/index.mdx'[39m
+]
+[?25h

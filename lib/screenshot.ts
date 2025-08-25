@@ -16,7 +16,7 @@ export class ScreenshotGenerator {
   async init() {
     if (!this.browser) {
       this.browser = await puppeteer.launch({
-        headless: true,
+        headless: 'new',
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -97,9 +97,7 @@ export class ScreenshotGenerator {
       const pageContent = await page.content()
       const currentUrl = page.url()
       
-      const isLoginPage = pageTitle.toLowerCase().includes('login') || 
-                          pageTitle.toLowerCase().includes('sign in') ||
-                          (pageTitle === 'Vercel' && pageContent.includes('Continue with')) || // Only exact "Vercel" title with login content
+      const isLoginPage = (pageTitle === 'Vercel' && pageContent.includes('Continue with')) || // Only exact "Vercel" title with login content
                           pageContent.includes('Log in to Vercel') ||
                           pageContent.includes('authentication required') ||
                           pageContent.includes('Login to continue') ||
@@ -121,9 +119,14 @@ export class ScreenshotGenerator {
         console.warn(`   URL: ${url}`)
         console.warn(`   Final URL: ${currentUrl}`)
         console.warn(`   Page title: ${pageTitle}`)
+        console.warn(`   First 500 chars of content: ${pageContent.substring(0, 500)}`)
         await page.close()
         return null
       }
+      
+      console.log(`✅ Page loaded successfully for ${projectName}`)
+      console.log(`   Title: ${pageTitle}`)
+      console.log(`   URL: ${currentUrl}`)
 
       if (isErrorPage) {
         console.warn(`⚠️ Detected error page for ${projectName}, skipping screenshot`)
@@ -132,7 +135,7 @@ export class ScreenshotGenerator {
       }
 
       // Wait for content to load and any animations to complete
-      await page.waitForTimeout(waitTime)
+      await new Promise(resolve => setTimeout(resolve, waitTime))
 
       // Try to wait for main content (common selectors)
       try {

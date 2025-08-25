@@ -1,76 +1,37 @@
 import { Container } from "@/components/Container";
 import { motion } from "framer-motion";
-import { 
-  CodeBracketIcon, 
-  BookOpenIcon, 
-  AcademicCapIcon,
-  HeartIcon,
-  LightBulbIcon,
-  CogIcon,
-  PuzzlePieceIcon,
-  BeakerIcon
-} from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 export default function HobbiesPage() {
   const hobbies = [
     {
-      title: "Building Applications",
-      description: "Exploring new frameworks, experimenting with cutting-edge technologies, and creating innovative solutions to real-world problems.",
-      icon: CodeBracketIcon,
-      projects: ["AI-powered web apps", "Automation tools", "SaaS platforms", "Mobile applications"],
-      gradient: "from-cyan-500/10 to-blue-500/10"
+      title: "Fitness & Gym",
+      description: "Staying strong and consistent with my workout routine. The gym is my sanctuary where I push my limits and build discipline. I love the mental clarity that comes after a good session, and how it translates into better focus for coding.",
+      longDescription: "There's something deeply satisfying about progressive overload - both in lifting weights and in life. Every rep, every set, every workout is building not just muscle, but character. I track my progress religiously and believe that physical fitness is the foundation for mental performance.",
+      imageUrl: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      reverse: false
     },
     {
-      title: "AI & Machine Learning",
-      description: "Diving deep into artificial intelligence, studying neural networks, and building intelligent systems that can learn and adapt.",
-      icon: BeakerIcon,
-      projects: ["Neural network experiments", "Natural language processing", "Computer vision projects", "AI agent development"],
-      gradient: "from-purple-500/10 to-pink-500/10"
+      title: "Nature & Hiking",
+      description: "Finding peace and inspiration in the great outdoors. Whether it's a challenging mountain trail or a peaceful forest walk, nature resets my mind and gives me perspective. The best ideas often come when I'm disconnected from screens.",
+      longDescription: "Nature is the ultimate debugger for the mind. When code gets complex and problems seem unsolvable, a hike in the mountains always provides clarity. The rhythm of walking, the fresh air, and the stunning views remind me that there's a whole world beyond the digital realm.",
+      imageUrl: "https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      reverse: true
     },
     {
-      title: "Reading & Learning",
-      description: "Constantly expanding knowledge through books on AI, technology trends, business strategy, and personal development.",
-      icon: BookOpenIcon,
-      projects: ["AI research papers", "Tech industry books", "Automation guides", "Innovation studies"],
-      gradient: "from-emerald-500/10 to-teal-500/10"
+      title: "AI & Automation",
+      description: "Exploring the fascinating world of artificial intelligence and building automation tools. I'm captivated by how AI can augment human capabilities and create more efficient workflows. Every day brings new possibilities.",
+      longDescription: "We're living through the most exciting technological revolution in history. AI isn't just about writing code - it's about understanding patterns, solving complex problems, and creating tools that genuinely help people. I spend hours experimenting with new AI frameworks and building agents that can automate tedious tasks.",
+      imageUrl: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      reverse: false
     },
     {
-      title: "Fitness & Wellness",
-      description: "Maintaining physical and mental health through consistent gym workouts, habit tracking, and mindful living practices.",
-      icon: HeartIcon,
-      projects: ["Strength training routines", "Habit tracking systems", "Wellness apps", "Fitness data analysis"],
-      gradient: "from-red-500/10 to-orange-500/10"
-    },
-    {
-      title: "Automation Enthusiast",
-      description: "Creating systems and workflows that eliminate repetitive tasks and optimize productivity in both personal and professional life.",
-      icon: CogIcon,
-      projects: ["Home automation", "Workflow optimization", "Data pipeline creation", "Task scheduling systems"],
-      gradient: "from-amber-500/10 to-yellow-500/10"
-    },
-    {
-      title: "AI Agents Research",
-      description: "Studying autonomous agents, multi-agent systems, and the future of AI-human collaboration in various industries.",
-      icon: PuzzlePieceIcon,
-      projects: ["Autonomous agent frameworks", "Multi-agent simulations", "AI collaboration tools", "Intelligent assistants"],
-      gradient: "from-indigo-500/10 to-violet-500/10"
+      title: "Learning & Reading",
+      description: "Constantly expanding my knowledge through books and research. From AI breakthroughs to personal development, I believe in lifelong learning. Every book is a conversation with brilliant minds who came before us.",
+      longDescription: "Reading is like having a conversation with the smartest people who ever lived. I'm particularly drawn to books about technology, AI, automation, and personal growth. My kindle is full of highlights and notes - each book adding another layer to my understanding of the world.",
+      imageUrl: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      reverse: true
     }
-  ];
-
-  const currentReads = [
-    { title: "The Alignment Problem", author: "Brian Christian", category: "AI Ethics" },
-    { title: "Atomic Habits", author: "James Clear", category: "Personal Development" },
-    { title: "Life 3.0", author: "Max Tegmark", category: "AI Future" },
-    { title: "Automate the Boring Stuff", author: "Al Sweigart", category: "Programming" }
-  ];
-
-  const skills = [
-    { name: "Machine Learning", level: 85 },
-    { name: "Automation", level: 90 },
-    { name: "Habit Tracking", level: 95 },
-    { name: "AI Research", level: 80 },
-    { name: "Fitness", level: 88 },
-    { name: "System Design", level: 92 }
   ];
 
   return (
@@ -81,183 +42,131 @@ export default function HobbiesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
           <h1 className="font-bold text-4xl md:text-6xl md:leading-tight text-zinc-50 max-w-4xl mx-auto">
-            Beyond Code:
-            <span className="text-cyan-500"> Passions & Pursuits</span>
+            Life Beyond
+            <span className="text-cyan-500"> Code</span>
           </h1>
           <p className="text-zinc-400 text-base md:text-lg max-w-3xl mx-auto mt-8 md:leading-relaxed">
-            When I'm not building applications, I'm exploring the fascinating world of AI, 
-            diving into books about automation, or tracking my fitness journey. Here's what 
-            keeps me curious and motivated.
+            What keeps me balanced, inspired, and constantly growing as a person. 
+            These aren't just hobbies - they're the foundations that make me a better developer and human.
           </p>
         </motion.div>
 
-        {/* Hobbies Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"
-        >
+        {/* Hobbies with alternating image-text layout */}
+        <div className="space-y-32">
           {hobbies.map((hobby, index) => (
             <motion.div
               key={hobby.title}
-              initial={{ opacity: 0, y: 30, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-              whileHover={{ y: -5, scale: 1.02 }}
-              className={`relative p-6 rounded-xl bg-gradient-to-br ${hobby.gradient} border border-zinc-700/30 hover:border-cyan-500/30 transition-all duration-300 group`}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center ${
+                hobby.reverse ? 'lg:grid-flow-col-dense' : ''
+              }`}
             >
-              <div className="flex items-center mb-4">
-                <div className="p-3 bg-zinc-800/50 rounded-lg border border-cyan-500/20">
-                  <hobby.icon className="w-6 h-6 text-cyan-400" />
-                </div>
+              {/* Image */}
+              <div className={`relative ${hobby.reverse ? 'lg:col-start-2' : ''}`}>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  viewport={{ once: true }}
+                  className="relative overflow-hidden rounded-2xl shadow-2xl group"
+                >
+                  <div className="aspect-[4/3] relative">
+                    <Image
+                      src={hobby.imageUrl}
+                      alt={hobby.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  </div>
+                </motion.div>
               </div>
-              
-              <h3 className="text-xl font-bold text-zinc-50 mb-3 group-hover:text-cyan-400 transition-colors">
-                {hobby.title}
-              </h3>
-              
-              <p className="text-zinc-400 text-sm leading-relaxed mb-4">
-                {hobby.description}
-              </p>
-              
-              <div className="space-y-2">
-                <h4 className="text-xs font-medium text-zinc-300 uppercase tracking-wider">
-                  Current Focus
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {hobby.projects.slice(0, 2).map((project, idx) => (
-                    <span
-                      key={idx}
-                      className="text-xs px-2 py-1 bg-zinc-800/50 text-zinc-400 rounded border border-zinc-700/30"
-                    >
-                      {project}
-                    </span>
-                  ))}
-                  {hobby.projects.length > 2 && (
-                    <span className="text-xs px-2 py-1 bg-zinc-800/30 text-zinc-500 rounded border border-zinc-700/20">
-                      +{hobby.projects.length - 2} more
-                    </span>
-                  )}
-                </div>
+
+              {/* Text Content */}
+              <div className={`space-y-6 ${hobby.reverse ? 'lg:col-start-1' : ''}`}>
+                <motion.div
+                  initial={{ opacity: 0, x: hobby.reverse ? 50 : -50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                  viewport={{ once: true }}
+                >
+                  <h2 className="text-3xl md:text-4xl font-bold text-zinc-50 mb-6">
+                    {hobby.title}
+                  </h2>
+                  
+                  <p className="text-lg md:text-xl text-zinc-300 leading-relaxed mb-6">
+                    {hobby.description}
+                  </p>
+                  
+                  <p className="text-zinc-400 leading-relaxed">
+                    {hobby.longDescription}
+                  </p>
+                  
+                  <div className="pt-4">
+                    <div className="w-20 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"></div>
+                  </div>
+                </motion.div>
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
-        {/* Currently Reading */}
+        {/* Philosophy Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="mb-20"
+          className="text-center max-w-4xl mx-auto py-32"
         >
-          <h2 className="text-3xl font-bold text-zinc-50 mb-8 text-center">
-            Currently Reading
+          <div className="text-6xl mb-8">🌟</div>
+          <h2 className="text-3xl md:text-4xl font-bold text-zinc-50 mb-8">
+            Balance Creates Better Code
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {currentReads.map((book, index) => (
-              <motion.div
-                key={book.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="p-4 bg-zinc-900/50 rounded-lg border border-zinc-700/30 hover:border-cyan-500/30 transition-colors group"
-              >
-                <div className="flex items-start space-x-3">
-                  <div className="p-2 bg-cyan-500/10 rounded border border-cyan-500/20 flex-shrink-0">
-                    <BookOpenIcon className="w-4 h-4 text-cyan-400" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-medium text-zinc-50 group-hover:text-cyan-400 transition-colors">
-                      {book.title}
-                    </h3>
-                    <p className="text-xs text-zinc-400 mt-1">by {book.author}</p>
-                    <span className="inline-block text-xs px-2 py-1 bg-zinc-800/50 text-zinc-400 rounded mt-2">
-                      {book.category}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Skills & Progress */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mb-20"
-        >
-          <h2 className="text-3xl font-bold text-zinc-50 mb-8 text-center">
-            Skill Development
-          </h2>
-          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-            {skills.map((skill, index) => (
-              <motion.div
-                key={skill.name}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="space-y-2"
-              >
-                <div className="flex justify-between items-center">
-                  <span className="text-zinc-300 font-medium">{skill.name}</span>
-                  <span className="text-zinc-400 text-sm">{skill.level}%</span>
-                </div>
-                <div className="w-full bg-zinc-800 rounded-full h-2">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${skill.level}%` }}
-                    transition={{ duration: 1, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                    className="bg-gradient-to-r from-cyan-500 to-blue-500 h-2 rounded-full"
-                  />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Philosophy */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center max-w-4xl mx-auto py-16"
-        >
-          <LightBulbIcon className="w-12 h-12 text-cyan-400 mx-auto mb-6" />
-          <h2 className="text-3xl font-bold text-zinc-50 mb-6">
-            My Philosophy
-          </h2>
-          <p className="text-zinc-400 text-lg leading-relaxed mb-8">
-            "The intersection of technology and human potential is where magic happens. 
-            Whether it's building applications that solve real problems, exploring AI that 
-            augments human capabilities, or maintaining the discipline to grow personally 
-            and physically - it's all connected. Continuous learning, consistent habits, 
-            and creative problem-solving are the foundations of a fulfilling life."
+          <p className="text-zinc-400 text-lg md:text-xl leading-relaxed mb-12">
+            The best developers aren't just technical experts - they're well-rounded individuals 
+            who draw inspiration from diverse experiences. Whether I'm pushing weight at the gym, 
+            hiking through mountain trails, diving into AI research, or getting lost in a good book, 
+            each activity feeds back into my work, making me more creative, resilient, and insightful.
           </p>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div className="text-center">
+              <div className="text-2xl mb-2">💪</div>
+              <div className="text-cyan-400 font-medium">Physical Strength</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl mb-2">🧠</div>
+              <div className="text-cyan-400 font-medium">Mental Clarity</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl mb-2">🌲</div>
+              <div className="text-cyan-400 font-medium">Natural Inspiration</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl mb-2">📚</div>
+              <div className="text-cyan-400 font-medium">Continuous Learning</div>
+            </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/projects"
               className="px-8 py-3 bg-cyan-500 text-white font-medium rounded-lg hover:bg-cyan-600 transition-colors"
             >
-              View My Projects
+              See My Work
             </a>
             <a
-              href="/about"
+              href="/contact"
               className="px-8 py-3 border border-zinc-700 text-zinc-300 font-medium rounded-lg hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
             >
-              About Me
+              Let's Connect
             </a>
           </div>
         </motion.div>

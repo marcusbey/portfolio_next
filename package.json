@@ -13,7 +13,9 @@
     "generate:sitemap": "node -r ts-node/register ./utils/generateSitemap.ts",
     "generate:favicons": "node ./scripts/generateFavicons.js",
     "generate:og": "node ./scripts/generateOgImages.js",
-    "prebuild": "npm run generate:sitemap"
+    "prebuild": "npm run generate:sitemap",
+    "update-visibility": "node ./scripts/update-project-visibility.js",
+    "make-all-visible": "node ./scripts/make-all-projects-visible.js"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
