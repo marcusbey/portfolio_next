@@ -53,13 +53,41 @@ async function syncProjectsFromVercel() {
         console.log(`📍 Deployment URL for ${vercelProject.name}: ${vercelDeploymentUrl}`)
       }
       
-      // Check if project already exists
-      let project = await prisma.project.findUnique({
-        where: { vercelId: vercelProject.id }
-      })
+      // Check if project already exists - with backward compatibility
+      let project: any = null
+      let shouldUseVercelDomain = shouldUseVercelUrl
       
-      // Determine if we should use Vercel domain
-      const shouldUseVercelDomain = project?.useVercelDomain || shouldUseVercelUrl
+      try {
+        project = await prisma.project.findUnique({
+          where: { vercelId: vercelProject.id }
+        })
+        
+        // If project exists and has useVercelDomain field, use it
+        if (project?.useVercelDomain !== undefined) {
+          shouldUseVercelDomain = project.useVercelDomain || shouldUseVercelUrl
+        }
+      } catch (error) {
+        // Column doesn't exist yet, fallback to name-based logic
+        console.log(`Using fallback logic for ${vercelProject.name} - column doesn't exist yet`)
+        
+        // Try to get project without useVercelDomain field
+        try {
+          project = await prisma.project.findUnique({
+            where: { vercelId: vercelProject.id },
+            select: {
+              id: true,
+              name: true,
+              url: true,
+              framework: true,
+              // Don't select useVercelDomain field
+            }
+          })
+        } catch (e) {
+          console.log(`Could not fetch project ${vercelProject.name}:`, e)
+        }
+        
+        shouldUseVercelDomain = shouldUseVercelUrl
+      }
       
       // Now build candidateUrls based on preference
       if (shouldUseVercelDomain) {
@@ -184,28 +212,39 @@ async function syncProjectsFromVercel() {
         )
         
         // Create new project (visible by default now) with enhanced information
+        // Handle backward compatibility for useVercelDomain field
+        const createData: any = {
+          vercelId: vercelProject.id,
+          name: vercelProject.name,
+          description: enhancedInfo.description,
+          longDescription: enhancedInfo.longDescription,
+          url: liveUrl,
+          liveUrl: liveUrl,
+          githubUrl: enhancedInfo.githubUrl,
+          imageUrl: screenshotPath,
+          framework: vercelProject.framework,
+          projectType: projectDetails.type,
+          category: projectDetails.category,
+          status: 'completed',
+          difficulty: projectDetails.difficulty,
+          featured: shouldBeFeatured,
+          isVisible: true, // Visible by default
+          displayOrder: 0,
+          projectStartDate: new Date(vercelProject.createdAt || Date.now()),
+          projectEndDate: new Date(),
+        }
+        
+        // Only add useVercelDomain if the column exists
+        try {
+          // Test if the column exists by doing a quick query
+          await prisma.$queryRaw`SELECT use_vercel_domain FROM projects LIMIT 1`
+          createData.useVercelDomain = shouldUseVercelUrl
+        } catch (error) {
+          console.log(`Column use_vercel_domain doesn't exist yet, skipping for ${vercelProject.name}`)
+        }
+        
         project = await prisma.project.create({
-          data: {
-            vercelId: vercelProject.id,
-            name: vercelProject.name,
-            description: enhancedInfo.description,
-            longDescription: enhancedInfo.longDescription,
-            url: liveUrl,
-            liveUrl: liveUrl,
-            githubUrl: enhancedInfo.githubUrl,
-            imageUrl: screenshotPath,
-            framework: vercelProject.framework,
-            projectType: projectDetails.type,
-            category: projectDetails.category,
-            status: 'completed',
-            difficulty: projectDetails.difficulty,
-            featured: shouldBeFeatured,
-            isVisible: true, // Visible by default
-            displayOrder: 0,
-            projectStartDate: new Date(vercelProject.createdAt || Date.now()),
-            projectEndDate: new Date(),
-            useVercelDomain: shouldUseVercelUrl, // Set based on project name
-          },
+          data: createData,
         })
         
         // Add framework as a technology if available
