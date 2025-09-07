@@ -37,6 +37,7 @@ model Project {
   imageUrls          String[]            @default([]) @map("image_urls")
   techStack          String[]            @default([]) @map("tech_stack")
   technologies       ProjectTechnology[]
+  useVercelDomain    Boolean             @default(false) @map("use_vercel_domain")
 
   @@map("projects")
 }

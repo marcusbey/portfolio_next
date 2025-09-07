@@ -15,50 +15,80 @@ async function syncProjectsFromVercel() {
       // Get the latest production deployment to get the live URL
       const latestDeployment = await vercel.getLatestDeployment(vercelProject.id)
       
-      // Build a list of potential URLs to test
+      // Build a list of potential URLs - only from Vercel's assigned domains
       const candidateUrls: string[] = []
       
-      // Add custom domains first (highest priority)
+      // Special cases: Connext Homes and Moood should use Vercel URL
+      const shouldUseVercelUrl = vercelProject.name.toLowerCase().includes('connext') || 
+                                vercelProject.name.toLowerCase().includes('connexthomes') ||
+                                vercelProject.name.toLowerCase().includes('moood')
+      
+      // Get assigned domains from Vercel (custom domains)
+      const assignedDomains: string[] = []
+      
+      // Collect domains from alias property
       if (vercelProject.alias && vercelProject.alias.length > 0) {
         vercelProject.alias.forEach(alias => {
-          candidateUrls.push(`https://${alias.domain}`)
-        })
-      }
-      
-      // Check production target for custom domains
-      if (vercelProject.targets?.production?.alias && vercelProject.targets.production.alias.length > 0) {
-        vercelProject.targets.production.alias.forEach(domain => {
-          if (!candidateUrls.includes(`https://${domain}`)) {
-            candidateUrls.push(`https://${domain}`)
+          const domain = `https://${alias.domain}`
+          if (!assignedDomains.includes(domain)) {
+            assignedDomains.push(domain)
           }
         })
       }
       
-      // Add Vercel deployment URL with higher priority
+      // Collect domains from production target
+      if (vercelProject.targets?.production?.alias && vercelProject.targets.production.alias.length > 0) {
+        vercelProject.targets.production.alias.forEach(domain => {
+          const fullDomain = `https://${domain}`
+          if (!assignedDomains.includes(fullDomain)) {
+            assignedDomains.push(fullDomain)
+          }
+        })
+      }
+      
+      // Get Vercel deployment URL
+      let vercelDeploymentUrl: string | null = null
       if (latestDeployment?.url) {
-        // The deployment URL from Vercel should be the actual live URL
-        const deploymentUrl = `https://${latestDeployment.url}`
-        console.log(`📍 Latest deployment URL for ${vercelProject.name}: ${deploymentUrl}`)
-        // Add it at the beginning for higher priority
-        candidateUrls.unshift(deploymentUrl)
+        vercelDeploymentUrl = `https://${latestDeployment.url}`
+        console.log(`📍 Deployment URL for ${vercelProject.name}: ${vercelDeploymentUrl}`)
       }
-      
-      // Try some common URL patterns for the project name
-      if (vercelProject.name && candidateUrls.length === 0) {
-        const projectName = vercelProject.name.toLowerCase()
-        // Only add these if we have no custom domains
-        candidateUrls.push(`https://${projectName}.com`)
-        candidateUrls.push(`https://www.${projectName}.com`)
-        candidateUrls.push(`https://${projectName}.vercel.app`)
-      }
-      
-      // Use the first candidate URL (priority order)
-      const liveUrl = candidateUrls[0] || null
       
       // Check if project already exists
       let project = await prisma.project.findUnique({
         where: { vercelId: vercelProject.id }
       })
+      
+      // Determine if we should use Vercel domain
+      const shouldUseVercelDomain = project?.useVercelDomain || shouldUseVercelUrl
+      
+      // Now build candidateUrls based on preference
+      if (shouldUseVercelDomain) {
+        // Use Vercel URL as priority
+        if (vercelDeploymentUrl) {
+          candidateUrls.push(vercelDeploymentUrl)
+        }
+        // Add custom domains as fallback
+        candidateUrls.push(...assignedDomains)
+      } else {
+        // Custom domains get priority
+        if (assignedDomains.length > 0) {
+          // Use the first assigned domain (usually the main custom domain)
+          candidateUrls.push(assignedDomains[0])
+        } else if (vercelDeploymentUrl) {
+          // Only use Vercel URL if no custom domains exist
+          candidateUrls.push(vercelDeploymentUrl)
+        }
+      }
+      
+      console.log(`🔗 Available domains for ${vercelProject.name}:`, {
+        assignedDomains,
+        vercelUrl: vercelDeploymentUrl,
+        useVercelDomain: shouldUseVercelDomain,
+        selectedUrl: candidateUrls[0] || 'none'
+      })
+      
+      // Use the first candidate URL (priority order)
+      const liveUrl = candidateUrls[0] || null
       
       if (project) {
         // Update existing project
@@ -174,6 +204,7 @@ async function syncProjectsFromVercel() {
             displayOrder: 0,
             projectStartDate: new Date(vercelProject.createdAt || Date.now()),
             projectEndDate: new Date(),
+            useVercelDomain: shouldUseVercelUrl, // Set based on project name
           },
         })
         
