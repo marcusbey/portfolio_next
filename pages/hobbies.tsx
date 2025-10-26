@@ -85,6 +85,7 @@ export default function HobbiesPage() {
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                    <div className="absolute inset-0 bg-[#06b7d6] mix-blend-color opacity-20 pointer-events-none" />
                   </div>
                 </motion.div>
               </div>

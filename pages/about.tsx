@@ -134,19 +134,13 @@ export default function AboutPage() {
             className="flex-shrink-0"
           >
             <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden">
-                <Image
-                  src={`/images/avatar.jpg`}
-                  width={240}
-                  height={240}
-                  alt="Romain BOBOE"
-                  className="rounded-2xl shadow-2xl"
-                  style={{
-                    filter: 'sepia(1) saturate(3) hue-rotate(160deg) brightness(0.9)'
-                  }}
-                />
-                <div className="absolute inset-0 bg-[#06b7d6] mix-blend-color opacity-60 rounded-2xl pointer-events-none"></div>
-              </div>
+              <Image
+                src={`/images/avatar.jpg`}
+                width={240}
+                height={240}
+                alt="Romain BOBOE"
+                className="rounded-2xl shadow-2xl"
+              />
               <div className="absolute -bottom-4 -right-4 bg-cyan-500 rounded-full w-12 h-12 flex items-center justify-center">
                 <Hand className="text-white w-6 h-6" />
               </div>
