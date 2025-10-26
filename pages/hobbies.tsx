@@ -141,27 +141,27 @@ export default function HobbiesPage() {
           </p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-            <div className="text-center">
-              <div className="mb-2 flex justify-center">
-                <Dumbbell className="w-8 h-8 text-cyan-400" />
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-3">
+                <Dumbbell className="w-8 h-8 text-cyan-400 mx-auto" />
               </div>
               <div className="text-cyan-400 font-medium">Physical Strength</div>
             </div>
-            <div className="text-center">
-              <div className="mb-2 flex justify-center">
-                <Brain className="w-8 h-8 text-cyan-400" />
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-3">
+                <Brain className="w-8 h-8 text-cyan-400 mx-auto" />
               </div>
               <div className="text-cyan-400 font-medium">Mental Clarity</div>
             </div>
-            <div className="text-center">
-              <div className="mb-2 flex justify-center">
-                <Trees className="w-8 h-8 text-cyan-400" />
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-3">
+                <Trees className="w-8 h-8 text-cyan-400 mx-auto" />
               </div>
               <div className="text-cyan-400 font-medium">Natural Inspiration</div>
             </div>
-            <div className="text-center">
-              <div className="mb-2 flex justify-center">
-                <BookOpen className="w-8 h-8 text-cyan-400" />
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-3">
+                <BookOpen className="w-8 h-8 text-cyan-400 mx-auto" />
               </div>
               <div className="text-cyan-400 font-medium">Continuous Learning</div>
             </div>
