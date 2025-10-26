@@ -482,7 +482,7 @@ export default function ProjectsPage() {
             viewport={{ once: true }}
             className="text-center p-6 bg-zinc-900/30 rounded-lg border border-zinc-700/30"
           >
-            <div className="mb-4">
+            <div className="mb-4 flex justify-center">
               <Rocket className="w-16 h-16 text-cyan-400" />
             </div>
             <div className="text-2xl font-bold text-zinc-50 mb-2">2007</div>
@@ -499,7 +499,7 @@ export default function ProjectsPage() {
             viewport={{ once: true }}
             className="text-center p-6 bg-zinc-900/30 rounded-lg border border-zinc-700/30"
           >
-            <div className="mb-4">
+            <div className="mb-4 flex justify-center">
               <Lightbulb className="w-16 h-16 text-cyan-400" />
             </div>
             <div className="text-2xl font-bold text-zinc-50 mb-2">Today</div>
@@ -516,7 +516,7 @@ export default function ProjectsPage() {
             viewport={{ once: true }}
             className="text-center p-6 bg-zinc-900/30 rounded-lg border border-zinc-700/30"
           >
-            <div className="mb-4">
+            <div className="mb-4 flex justify-center">
               <Target className="w-16 h-16 text-cyan-400" />
             </div>
             <div className="text-2xl font-bold text-zinc-50 mb-2">Always</div>
@@ -536,7 +536,7 @@ export default function ProjectsPage() {
         viewport={{ once: true }}
         className="max-w-4xl mx-auto px-4 py-16 text-center"
       >
-        <div className="mb-6">
+        <div className="mb-6 flex justify-center">
           <Flame className="w-16 h-16 text-cyan-400" />
         </div>
         <h2 className="text-3xl md:text-4xl font-bold text-zinc-50 mb-6">
