@@ -5,6 +5,7 @@ import { StatsSection } from "@/components/StatCounter";
 import { user } from "@/constants/user";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { Hand } from "lucide-react";
 import {
   AiOutlineGithub,
   AiOutlineLinkedin,
@@ -133,15 +134,21 @@ export default function AboutPage() {
             className="flex-shrink-0"
           >
             <div className="relative">
-              <Image
-                src={`/images/avatar.jpg`}
-                width={240}
-                height={240}
-                alt="Romain BOBOE"
-                className="rounded-2xl shadow-2xl"
-              />
+              <div className="relative rounded-2xl overflow-hidden">
+                <Image
+                  src={`/images/avatar.jpg`}
+                  width={240}
+                  height={240}
+                  alt="Romain BOBOE"
+                  className="rounded-2xl shadow-2xl"
+                  style={{
+                    filter: 'sepia(1) saturate(3) hue-rotate(160deg) brightness(0.9)'
+                  }}
+                />
+                <div className="absolute inset-0 bg-[#06b7d6] mix-blend-color opacity-60 rounded-2xl pointer-events-none"></div>
+              </div>
               <div className="absolute -bottom-4 -right-4 bg-cyan-500 rounded-full w-12 h-12 flex items-center justify-center">
-                <span className="text-white text-xl">👋</span>
+                <Hand className="text-white w-6 h-6" />
               </div>
             </div>
             
@@ -274,7 +281,7 @@ export default function AboutPage() {
             
             <p className="text-zinc-300 font-medium">
               Fun fact: I'm convinced that a good dad joke and some hot sauce can solve most of life's problems 
-              (though I'm still working on applying this to debugging! 🌶️😄)
+              (though I'm still working on applying this to debugging!)
             </p>
           </div>
         </motion.div>

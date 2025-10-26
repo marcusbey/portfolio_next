@@ -1,5 +1,6 @@
 import { Container } from "@/components/Container";
 import { motion } from "framer-motion";
+import { Building2 } from "lucide-react";
 
 export default function ArchitecturePage() {
   return (
@@ -24,7 +25,9 @@ export default function ArchitecturePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="text-8xl mb-8">🏛️</div>
+            <div className="mb-8">
+              <Building2 className="w-32 h-32 text-cyan-400" />
+            </div>
             <h1 className="font-bold text-5xl md:text-7xl text-white mb-6">
               Coming Soon
             </h1>

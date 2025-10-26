@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { MessageCircle, Rocket } from "lucide-react";
 
 export const Contact = () => {
   const [open, setOpen] = useState(false);
@@ -8,6 +9,10 @@ export const Contact = () => {
   const [loading, setLoading] = useState<Boolean>(false);
   const [isMessageValid, setIsMessageValid] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [formMeta, setFormMeta] = useState({
+    honeypot: "",
+    formOpenedAt: 0,
+  });
 
   const [formState, setFormState] = useState({
     email: {
@@ -25,8 +30,9 @@ export const Contact = () => {
   };
 
   useEffect(() => {
-    const wordCount = countWords(formState.message.value);
-    setIsMessageValid(wordCount >= 3);
+    const trimmedMessage = formState.message.value.trim();
+    const wordCount = countWords(trimmedMessage);
+    setIsMessageValid(wordCount >= 3 && trimmedMessage.length >= 10);
   }, [formState.message.value]);
 
   useEffect(() => {
@@ -80,8 +86,19 @@ export const Contact = () => {
     setFormState({ ...formState, ...state });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (open) {
+      setFormMeta({
+        honeypot: "",
+        formOpenedAt: Date.now(),
+      });
+    }
+  }, [open]);
+
+  const handleSubmit = async (
+    e?: React.FormEvent | React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e?.preventDefault();
     let { email, message } = formState;
     let updatedState = { ...formState };
     let regex =
@@ -106,15 +123,17 @@ export const Contact = () => {
     }
 
     if (!isMessageValid) {
-      updatedState.message.error = `Message must be at least 3 words.`;
+      updatedState.message.error = `Message must be at least 3 words and 10 characters.`;
       setFormState({ ...updatedState });
       return;
     }
 
     try {
-      const apiUrl = process.env.NODE_ENV === 'production' 
-        ? `${window.location.origin}/api/send-email`
-        : '/api/send-email';
+      const apiUrl = process.env.NODE_ENV === "production"
+        ? `${window.location.origin}/api/contact-v2`
+        : "/api/contact-v2";
+      // Use formOpenedAt as timestamp (not current time) to accurately track form filling time
+      const submissionTimestamp = formMeta.formOpenedAt || Date.now();
 
       setLoading(true);
       setError(null);
@@ -128,6 +147,8 @@ export const Contact = () => {
         body: JSON.stringify({
           email: email.value,
           message: message.value,
+          honeypot: formMeta.honeypot,
+          timestamp: submissionTimestamp,
         }),
       });
 
@@ -157,8 +178,11 @@ export const Contact = () => {
         email: { value: '', error: '' },
         message: { value: '', error: '' },
       });
-      
-      setSuccess('Message sent successfully! I\'ll get back to you soon. 🚀');
+      setFormMeta({
+        honeypot: "",
+        formOpenedAt: Date.now(),
+      });
+      setSuccess('Message sent successfully! I\'ll get back to you soon.');
     } catch (error: any) {
       console.error('Form submission error:', {
         error,
@@ -188,12 +212,16 @@ export const Contact = () => {
     setLoading(false);
     setError("");
     setSuccess("");
+    setFormMeta({
+      honeypot: "",
+      formOpenedAt: Date.now(),
+    });
   };
 
   return (
     <>
       <motion.button
-        onClick={() => setOpen(true)}
+        onClick={handleButtonClick}
         className={`fixed bottom-5 right-5 z-50 p-4 rounded-full transition-all duration-500 ease-in-out transform ${
           isScrolled ? 'bg-cyan-500 hover:bg-cyan-600 scale-110' : 'bg-zinc-800 hover:bg-zinc-700'
         }`}
@@ -204,20 +232,7 @@ export const Contact = () => {
           transition: { duration: 0.5 }
         }}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6 text-white"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-          />
-        </svg>
+        <MessageCircle className="w-6 h-6 text-white" />
       </motion.button>
 
       <AnimatePresence>
@@ -238,11 +253,11 @@ export const Contact = () => {
               className="fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-zinc-900 p-8 border border-zinc-800/50 md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-2xl"
             >
               <div className="p-4 bg-zinc-800/50 rounded-2xl backdrop-blur-sm">
-                <h2 className="text-zinc-200 font-bold text-sm md:text-xl">
-                  Have a question? Drop in your message 👇
+                <h2 className="text-zinc-200 font-bold text-sm md:text-xl flex items-center gap-2">
+                  Have a question? Drop in your message
                 </h2>
                 <small className="hidden md:block text-xs text-zinc-400 mb-10">
-                  It won't take more than 10 seconds. Shoot your shot. 😉
+                  It won't take more than 10 seconds. Shoot your shot.
                 </small>
               </div>
               <div className="content p-6 flex flex-col bg-zinc-900/50 rounded-2xl mt-4 backdrop-blur-sm">
@@ -274,6 +289,23 @@ export const Contact = () => {
                 <small className="h-4 min-h-4 text-red-500 font-semibold mb-4">
                   {formState.message.error && formState.message.error}
                 </small>
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="contact-website">Website</label>
+                  <input
+                    id="contact-website"
+                    name="website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={formMeta.honeypot}
+                    onChange={(e) =>
+                      setFormMeta((prev) => ({
+                        ...prev,
+                        honeypot: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
                 <button
                   onClick={handleSubmit}
                   disabled={!isMessageValid}
@@ -287,7 +319,8 @@ export const Contact = () => {
                 </button>
                 <small className="h-4 min-h-4 mb-4">
                   {success && (
-                    <p className="text-green-500 font-semibold text-sm">
+                    <p className="text-green-500 font-semibold text-sm flex items-center gap-2">
+                      <Rocket className="w-4 h-4" />
                       {success}
                     </p>
                   )}

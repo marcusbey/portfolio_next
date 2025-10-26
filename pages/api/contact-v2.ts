@@ -6,7 +6,9 @@ interface ContactRequest {
   email: string
   message: string
   honeypot?: string // Anti-spam field
-  timestamp?: number
+  timestamp: number
+  name?: string
+  subject?: string
 }
 
 interface ContactResponse {
@@ -22,7 +24,9 @@ const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
 
 // Configuration
 const config = {
-  resendKey: process.env.RESEND_API_KEY,
+  get resendKey() {
+    return process.env.RESEND_API_KEY
+  },
   contactEmail: process.env.CONTACT_FORM_EMAIL || 'hi@romainboboe.com',
   verifiedDomain: process.env.VERIFIED_DOMAIN || 'romainboboe.com',
   isDevelopment: process.env.NODE_ENV === 'development',
@@ -30,10 +34,18 @@ const config = {
   rateLimitMaxRequests: 3, // max 3 emails per 15 minutes per IP
   minMessageLength: 10,
   maxMessageLength: 5000,
+  maxNameLength: 100,
+  maxSubjectLength: 150,
+  minSubmissionTime: 2000, // Minimum 2 seconds to fill form (anti-bot)
+  maxLinksInMessage: 2, // Maximum number of URLs allowed in message
   allowedOrigins: [
     'http://localhost:3000',
     'https://www.romainboboe.com',
     'https://romainboboe.com'
+  ],
+  allowedRecipients: [
+    'hi@romainboboe.com',
+    'test@example.com' // For testing only
   ],
   adminSecret: process.env.ADMIN_SECRET
 }
@@ -41,6 +53,8 @@ const config = {
 // Validation helpers
 const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (typeof email !== 'string') return false
+  if (/[\r\n]/.test(email)) return false
   return emailRegex.test(email) && email.length <= 254
 }
 
@@ -49,8 +63,49 @@ const validateMessage = (message: string): boolean => {
          message.length <= config.maxMessageLength
 }
 
-const sanitizeInput = (input: string): string => {
+const sanitizeMessage = (input: string): string => {
   return input.trim().slice(0, config.maxMessageLength)
+}
+
+const sanitizeShortInput = (input: string, maxLength: number): string => {
+  return input.replace(/[\r\n]/g, ' ').trim().slice(0, maxLength)
+}
+
+const sanitizeEmail = (email: string): string => {
+  return email.trim().toLowerCase()
+}
+
+// Content spam detection
+const detectSpam = (message: string): { isSpam: boolean; reason?: string } => {
+  // Count URLs in message
+  const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)|(\b[a-z0-9-]+\.[a-z]{2,}\b)/gi
+  const urls = message.match(urlRegex) || []
+
+  if (urls.length > config.maxLinksInMessage) {
+    return { isSpam: true, reason: 'Too many links' }
+  }
+
+  // Check for common spam patterns
+  const spamPatterns = [
+    /\b(viagra|cialis|pharmacy|casino|lottery|winner|prize)\b/i,
+    /\b(click here|buy now|act now|limited time|urgent)\b/i,
+    /(http[s]?:\/\/){3,}/i, // Multiple URLs
+    /\$\$\$+/,
+    /FREE!!!+/i
+  ]
+
+  for (const pattern of spamPatterns) {
+    if (pattern.test(message)) {
+      return { isSpam: true, reason: 'Suspicious content detected' }
+    }
+  }
+
+  return { isSpam: false }
+}
+
+// Validate recipient email is in allowed list
+const validateRecipient = (recipient: string): boolean => {
+  return config.allowedRecipients.includes(recipient.toLowerCase().trim())
 }
 
 // Rate limiting
@@ -135,7 +190,7 @@ export default async function handler(
     }
 
     // Parse and validate request body
-    const { email, message, honeypot, timestamp } = req.body as ContactRequest
+    const { email, message, honeypot, timestamp, name, subject } = req.body as ContactRequest
 
     // Honeypot check (anti-spam)
     if (honeypot && honeypot.trim() !== '') {
@@ -146,16 +201,41 @@ export default async function handler(
       })
     }
 
+    // Require timestamp to mitigate automated abuse
+    if (!timestamp || typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid form submission.',
+        error: 'Missing or invalid timestamp'
+      })
+    }
+
     // Timestamp check (prevent replay attacks)
-    if (timestamp) {
-      const submissionAge = Date.now() - timestamp
-      if (submissionAge > 30 * 60 * 1000) { // 30 minutes
-        return res.status(400).json({
-          success: false,
-          message: 'Form submission expired. Please refresh and try again.',
-          error: 'Submission expired'
-        })
-      }
+    const submissionAge = Date.now() - timestamp
+    if (submissionAge > 30 * 60 * 1000) { // 30 minutes
+      return res.status(400).json({
+        success: false,
+        message: 'Form submission expired. Please refresh and try again.',
+        error: 'Submission expired'
+      })
+    }
+
+    if (submissionAge < -5 * 60 * 1000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Form submission timestamp is invalid.',
+        error: 'Future timestamp'
+      })
+    }
+
+    // Minimum submission time check (anti-bot)
+    if (submissionAge < config.minSubmissionTime) {
+      console.log(`⚠️ Suspiciously fast submission (${submissionAge}ms) from IP: ${clientIP}`)
+      return res.status(400).json({
+        success: false,
+        message: 'Please take a moment to review your message before submitting.',
+        error: 'Submission too fast'
+      })
     }
 
     // Validate required fields
@@ -186,8 +266,30 @@ export default async function handler(
     }
 
     // Sanitize inputs
-    const sanitizedEmail = sanitizeInput(email)
-    const sanitizedMessage = sanitizeInput(message)
+    const sanitizedEmail = sanitizeEmail(email)
+    const sanitizedMessage = sanitizeMessage(message)
+    const sanitizedName = name ? sanitizeShortInput(name, config.maxNameLength) : undefined
+    const sanitizedSubject = subject ? sanitizeShortInput(subject, config.maxSubjectLength) : undefined
+
+    // Spam detection
+    const spamCheck = detectSpam(sanitizedMessage)
+    if (spamCheck.isSpam) {
+      console.log(`🚫 Spam detected from IP ${clientIP}: ${spamCheck.reason}`)
+      return res.status(200).json({
+        success: true,
+        message: 'Message sent successfully' // Fake success to not reveal spam detection
+      })
+    }
+
+    // Validate recipient (prevents email relay abuse)
+    if (!validateRecipient(config.contactEmail)) {
+      console.error(`❌ Invalid recipient configuration: ${config.contactEmail}`)
+      return res.status(500).json({
+        success: false,
+        message: 'Email service configuration error. Please contact the administrator.',
+        error: 'Invalid recipient'
+      })
+    }
 
     // Initialize Resend client
     let resend: Resend
@@ -203,14 +305,21 @@ export default async function handler(
     }
 
     // Prepare email
+    const subjectPrefix = `${config.isDevelopment ? '[TEST] ' : ''}📨 New Contact Form Message`
+    const emailSubject = sanitizedSubject
+      ? `${subjectPrefix} - ${sanitizedSubject}`
+      : subjectPrefix
+
     const emailConfig = {
       from: `contact@${config.verifiedDomain}`,
       to: config.contactEmail,
       replyTo: sanitizedEmail,
-      subject: `${config.isDevelopment ? '[TEST] ' : ''}📨 New Contact Form Message`,
+      subject: emailSubject,
       react: EmailTemplate({ 
         senderEmail: sanitizedEmail, 
-        message: sanitizedMessage 
+        message: sanitizedMessage,
+        senderName: sanitizedName,
+        subject: sanitizedSubject
       })
     }
 
@@ -274,4 +383,8 @@ export const healthCheck = async (): Promise<{ status: string; timestamp: number
     status: 'healthy',
     timestamp: Date.now()
   }
+}
+
+export const __testUtils = {
+  resetRateLimitStore: () => rateLimitStore.clear()
 }

@@ -1,6 +1,7 @@
 import { Container } from "@/components/Container";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { Star, Dumbbell, Trees, BookOpen, Brain } from "lucide-react";
 
 export default function HobbiesPage() {
   const hobbies = [
@@ -125,7 +126,9 @@ export default function HobbiesPage() {
           viewport={{ once: true }}
           className="text-center max-w-4xl mx-auto py-32"
         >
-          <div className="text-6xl mb-8">🌟</div>
+          <div className="mb-8">
+            <Star className="w-16 h-16 text-cyan-400" />
+          </div>
           <h2 className="text-3xl md:text-4xl font-bold text-zinc-50 mb-8">
             Balance Creates Better Code
           </h2>
@@ -138,19 +141,27 @@ export default function HobbiesPage() {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div className="text-center">
-              <div className="text-2xl mb-2">💪</div>
+              <div className="mb-2">
+                <Dumbbell className="w-8 h-8 text-cyan-400" />
+              </div>
               <div className="text-cyan-400 font-medium">Physical Strength</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl mb-2">🧠</div>
+              <div className="mb-2">
+                <Brain className="w-8 h-8 text-cyan-400" />
+              </div>
               <div className="text-cyan-400 font-medium">Mental Clarity</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl mb-2">🌲</div>
+              <div className="mb-2">
+                <Trees className="w-8 h-8 text-cyan-400" />
+              </div>
               <div className="text-cyan-400 font-medium">Natural Inspiration</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl mb-2">📚</div>
+              <div className="mb-2">
+                <BookOpen className="w-8 h-8 text-cyan-400" />
+              </div>
               <div className="text-cyan-400 font-medium">Continuous Learning</div>
             </div>
           </div>

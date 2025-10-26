@@ -3,7 +3,7 @@
  */
 
 import { createMocks } from 'node-mocks-http'
-import handler from '../pages/api/contact-v2'
+import handler, { __testUtils } from '../pages/api/contact-v2'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 // Mock Resend
@@ -34,6 +34,7 @@ afterAll(() => {
 describe('/api/contact-v2', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    __testUtils.resetRateLimitStore()
   })
 
   it('should handle successful email submission', async () => {
@@ -42,7 +43,7 @@ describe('/api/contact-v2', () => {
       data: { id: 'test-email-id' },
       error: null
     })
-    
+
     Resend.mockImplementation(() => ({
       emails: { send: mockSend }
     }))
@@ -52,7 +53,7 @@ describe('/api/contact-v2', () => {
       body: {
         email: 'test@example.com',
         message: 'This is a test message that is long enough to pass validation',
-        timestamp: Date.now()
+        timestamp: Date.now() - 3000 // 3 seconds ago to pass min submission time
       },
       headers: {
         origin: 'http://localhost:3000'
@@ -73,7 +74,8 @@ describe('/api/contact-v2', () => {
       method: 'POST',
       body: {
         email: '',
-        message: ''
+        message: '',
+        timestamp: Date.now() - 3000 // 3 seconds ago
       }
     })
 
@@ -90,7 +92,8 @@ describe('/api/contact-v2', () => {
       method: 'POST',
       body: {
         email: 'invalid-email',
-        message: 'This is a valid test message'
+        message: 'This is a valid test message',
+        timestamp: Date.now() - 3000 // 3 seconds ago
       }
     })
 
@@ -107,7 +110,8 @@ describe('/api/contact-v2', () => {
       method: 'POST',
       body: {
         email: 'test@example.com',
-        message: 'short' // Too short
+        message: 'short', // Too short
+        timestamp: Date.now() - 3000 // 3 seconds ago
       }
     })
 
@@ -125,6 +129,7 @@ describe('/api/contact-v2', () => {
       body: {
         email: 'spammer@example.com',
         message: 'This is spam',
+        timestamp: Date.now(),
         honeypot: 'bot-filled-this' // Bot detected
       }
     })
@@ -139,7 +144,8 @@ describe('/api/contact-v2', () => {
   it('should handle rate limiting', async () => {
     const requestBody = {
       email: 'test@example.com',
-      message: 'This is a test message that is long enough'
+      message: 'This is a test message that is long enough',
+      timestamp: Date.now() - 3000 // Start with 3 seconds ago
     }
 
     const { Resend } = require('resend')
@@ -154,9 +160,10 @@ describe('/api/contact-v2', () => {
 
     // Send 4 requests (limit is 3)
     for (let i = 0; i < 4; i++) {
+      requestBody.timestamp = Date.now() - 3000 // Always 3 seconds ago
       const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
         method: 'POST',
-        body: requestBody,
+        body: { ...requestBody },
         connection: { remoteAddress: '127.0.0.1' }
       })
 
@@ -196,7 +203,7 @@ describe('/api/contact-v2', () => {
       data: null,
       error: { message: 'API Error' }
     })
-    
+
     Resend.mockImplementation(() => ({
       emails: { send: mockSend }
     }))
@@ -205,7 +212,8 @@ describe('/api/contact-v2', () => {
       method: 'POST',
       body: {
         email: 'test@example.com',
-        message: 'This is a test message that is long enough'
+        message: 'This is a test message that is long enough',
+        timestamp: Date.now() - 3000 // 3 seconds ago
       }
     })
 
@@ -249,7 +257,7 @@ describe('/api/contact-v2', () => {
       data: { id: 'test-id' },
       error: null
     })
-    
+
     Resend.mockImplementation(() => ({
       emails: { send: mockSend }
     }))
@@ -260,7 +268,8 @@ describe('/api/contact-v2', () => {
       method: 'POST',
       body: {
         email: 'test@example.com',
-        message: longMessage
+        message: longMessage,
+        timestamp: Date.now() - 3000 // 3 seconds ago
       }
     })
 
@@ -270,5 +279,88 @@ describe('/api/contact-v2', () => {
     const data = JSON.parse(res._getData())
     expect(data.success).toBe(false)
     expect(data.message).toContain('characters')
+  })
+
+  it('should reject submissions that are too fast (anti-bot)', async () => {
+    const submissionTime = Date.now()
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
+      method: 'POST',
+      body: {
+        email: 'test@example.com',
+        message: 'This is a valid test message with enough characters',
+        timestamp: submissionTime - 500 // Only 500ms ago (less than 2 seconds)
+      }
+    })
+
+    await handler(req, res)
+
+    expect(res._getStatusCode()).toBe(400)
+    const data = JSON.parse(res._getData())
+    expect(data.success).toBe(false)
+    expect(data.message).toContain('take a moment')
+  })
+
+  it('should detect spam with too many links', async () => {
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
+      method: 'POST',
+      body: {
+        email: 'spammer@example.com',
+        message: 'Check out these links: http://spam1.com http://spam2.com http://spam3.com',
+        timestamp: Date.now() - 5000
+      }
+    })
+
+    await handler(req, res)
+
+    // Should return fake success to not reveal spam detection
+    expect(res._getStatusCode()).toBe(200)
+    const data = JSON.parse(res._getData())
+    expect(data.success).toBe(true)
+  })
+
+  it('should detect spam with suspicious patterns', async () => {
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
+      method: 'POST',
+      body: {
+        email: 'spammer@example.com',
+        message: 'Buy viagra now! Click here for lottery winner prize!',
+        timestamp: Date.now() - 5000
+      }
+    })
+
+    await handler(req, res)
+
+    // Should return fake success to not reveal spam detection
+    expect(res._getStatusCode()).toBe(200)
+    const data = JSON.parse(res._getData())
+    expect(data.success).toBe(true)
+  })
+
+  it('should allow legitimate messages with valid links', async () => {
+    const { Resend } = require('resend')
+    const mockSend = jest.fn().mockResolvedValue({
+      data: { id: 'test-id' },
+      error: null
+    })
+
+    Resend.mockImplementation(() => ({
+      emails: { send: mockSend }
+    }))
+
+    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
+      method: 'POST',
+      body: {
+        email: 'legitimate@example.com',
+        message: 'Hi, I would like to discuss a project. You can see my portfolio at https://example.com',
+        timestamp: Date.now() - 5000
+      }
+    })
+
+    await handler(req, res)
+
+    expect(res._getStatusCode()).toBe(200)
+    const data = JSON.parse(res._getData())
+    expect(data.success).toBe(true)
+    expect(mockSend).toHaveBeenCalledTimes(1)
   })
 })

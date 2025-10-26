@@ -1,12 +1,12 @@
 import { Container } from "@/components/Container";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { 
-  EnvelopeIcon, 
-  MapPinIcon, 
+import {
+  EnvelopeIcon,
+  MapPinIcon,
   ClockIcon,
   CheckCircleIcon,
-  ExclamationCircleIcon
+  ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 
 export default function ContactPage() {
@@ -18,6 +18,10 @@ export default function ContactPage() {
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [formMeta, setFormMeta] = useState({
+    honeypot: '',
+    formOpenedAt: Date.now()
+  });
 
   const contactInfo = [
     {
@@ -62,6 +66,8 @@ export default function ContactPage() {
     e.preventDefault();
     setStatus('loading');
     setErrorMessage('');
+    // Use formOpenedAt as timestamp to accurately track form filling time
+    const submissionTimestamp = formMeta.formOpenedAt;
 
     try {
       const response = await fetch('/api/contact-v2', {
@@ -69,12 +75,20 @@ export default function ContactPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          honeypot: formMeta.honeypot,
+          timestamp: submissionTimestamp
+        }),
       });
 
       if (response.ok) {
         setStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
+        setFormMeta({
+          honeypot: '',
+          formOpenedAt: Date.now()
+        });
       } else {
         const errorData = await response.json();
         setStatus('error');
@@ -204,6 +218,23 @@ export default function ContactPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="hidden" aria-hidden="true">
+                <label htmlFor="contact-page-website">Website</label>
+                <input
+                  id="contact-page-website"
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formMeta.honeypot}
+                  onChange={(e) =>
+                    setFormMeta((prev) => ({
+                      ...prev,
+                      honeypot: e.target.value
+                    }))
+                  }
+                />
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-zinc-300 mb-2">

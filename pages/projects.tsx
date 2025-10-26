@@ -2,9 +2,9 @@ import { Container } from "@/components/Container";
 import { EnhancedProjectsV2 } from "@/components/EnhancedProjectsV2";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { 
-  CodeBracketIcon, 
-  RocketLaunchIcon, 
+import {
+  CodeBracketIcon,
+  RocketLaunchIcon,
   SparklesIcon,
   CpuChipIcon,
   GlobeAltIcon,
@@ -12,6 +12,7 @@ import {
   LightBulbIcon,
   ChartBarIcon
 } from "@heroicons/react/24/outline";
+import { Sparkles, Rocket, Lightbulb, Target, Flame, Smile, BookOpen } from "lucide-react";
 
 interface ProjectData {
   id: string
@@ -416,7 +417,7 @@ export default function ProjectsPage() {
         <p className="text-zinc-400 text-lg leading-relaxed">
           Each project you see here represents late nights, countless iterations, and the excitement 
           of solving real problems. I don't just write code—I craft experiences that people love to use. 
-          From the first sketch to the final deployment, it's all about bringing ideas to life. ✨
+          From the first sketch to the final deployment, it's all about bringing ideas to life.
         </p>
       </motion.div>
 
@@ -481,7 +482,9 @@ export default function ProjectsPage() {
             viewport={{ once: true }}
             className="text-center p-6 bg-zinc-900/30 rounded-lg border border-zinc-700/30"
           >
-            <div className="text-6xl mb-4">🚀</div>
+            <div className="mb-4">
+              <Rocket className="w-16 h-16 text-cyan-400" />
+            </div>
             <div className="text-2xl font-bold text-zinc-50 mb-2">2007</div>
             <h3 className="text-lg font-medium text-zinc-300 mb-2">Started with Web Design</h3>
             <p className="text-zinc-400 text-sm">
@@ -496,7 +499,9 @@ export default function ProjectsPage() {
             viewport={{ once: true }}
             className="text-center p-6 bg-zinc-900/30 rounded-lg border border-zinc-700/30"
           >
-            <div className="text-6xl mb-4">💡</div>
+            <div className="mb-4">
+              <Lightbulb className="w-16 h-16 text-cyan-400" />
+            </div>
             <div className="text-2xl font-bold text-zinc-50 mb-2">Today</div>
             <h3 className="text-lg font-medium text-zinc-300 mb-2">Full-Stack + AI</h3>
             <p className="text-zinc-400 text-sm">
@@ -511,7 +516,9 @@ export default function ProjectsPage() {
             viewport={{ once: true }}
             className="text-center p-6 bg-zinc-900/30 rounded-lg border border-zinc-700/30"
           >
-            <div className="text-6xl mb-4">🎯</div>
+            <div className="mb-4">
+              <Target className="w-16 h-16 text-cyan-400" />
+            </div>
             <div className="text-2xl font-bold text-zinc-50 mb-2">Always</div>
             <h3 className="text-lg font-medium text-zinc-300 mb-2">Learning & Growing</h3>
             <p className="text-zinc-400 text-sm">
@@ -529,7 +536,9 @@ export default function ProjectsPage() {
         viewport={{ once: true }}
         className="max-w-4xl mx-auto px-4 py-16 text-center"
       >
-        <div className="text-6xl mb-6">🔥</div>
+        <div className="mb-6">
+          <Flame className="w-16 h-16 text-cyan-400" />
+        </div>
         <h2 className="text-3xl md:text-4xl font-bold text-zinc-50 mb-6">
           What Gets Me Excited
         </h2>
@@ -540,17 +549,17 @@ export default function ProjectsPage() {
           Every bug is a puzzle, every feature is a story, and every user is someone I want to delight.
         </p>
         <div className="flex flex-wrap justify-center gap-3 text-sm">
-          <span className="px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-300 rounded-full border border-cyan-500/20">
-            💡 Problem Solving
+          <span className="px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-300 rounded-full border border-cyan-500/20 flex items-center gap-2">
+            <Lightbulb className="w-4 h-4" /> Problem Solving
           </span>
-          <span className="px-4 py-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 text-green-300 rounded-full border border-green-500/20">
-            🚀 Building Cool Stuff
+          <span className="px-4 py-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 text-green-300 rounded-full border border-green-500/20 flex items-center gap-2">
+            <Rocket className="w-4 h-4" /> Building Cool Stuff
           </span>
-          <span className="px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-300 rounded-full border border-purple-500/20">
-            📚 Learning New Things
+          <span className="px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-300 rounded-full border border-purple-500/20 flex items-center gap-2">
+            <BookOpen className="w-4 h-4" /> Learning New Things
           </span>
-          <span className="px-4 py-2 bg-gradient-to-r from-orange-500/10 to-red-500/10 text-orange-300 rounded-full border border-orange-500/20">
-            😊 Making Users Happy
+          <span className="px-4 py-2 bg-gradient-to-r from-orange-500/10 to-red-500/10 text-orange-300 rounded-full border border-orange-500/20 flex items-center gap-2">
+            <Smile className="w-4 h-4" /> Making Users Happy
           </span>
         </div>
       </motion.div>

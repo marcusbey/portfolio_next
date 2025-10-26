@@ -10,12 +10,13 @@ import { getAllBlogs } from "@/lib/getAllBlogs";
 import AllBlogs from "@/components/AllBlogs";
 import { Uses } from "@/components/Uses";
 import { motion } from "framer-motion";
-import { 
-  CodeBracketIcon, 
-  BookOpenIcon, 
+import {
+  CodeBracketIcon,
+  BookOpenIcon,
   HeartIcon,
   CogIcon
 } from "@heroicons/react/24/outline";
+import { Dumbbell, BookOpen, Mountain } from "lucide-react";
 
 // const inter = Inter({ subsets: ["latin"] }); // Updated for redeploy
 
@@ -66,7 +67,9 @@ export default function Home({
             viewport={{ once: true }}
             className="p-6 bg-zinc-900/50 rounded-xl border border-zinc-700/30 hover:border-cyan-500/30 transition-all duration-300 group text-center"
           >
-            <div className="text-4xl mb-4">💪</div>
+            <div className="mb-4">
+              <Dumbbell className="w-12 h-12 text-zinc-400" />
+            </div>
             <h3 className="text-lg font-bold text-zinc-50 mb-2 group-hover:text-cyan-400 transition-colors">
               Fitness & Gym
             </h3>
@@ -98,7 +101,9 @@ export default function Home({
             viewport={{ once: true }}
             className="p-6 bg-zinc-900/50 rounded-xl border border-zinc-700/30 hover:border-cyan-500/30 transition-all duration-300 group text-center"
           >
-            <div className="text-4xl mb-4">📚</div>
+            <div className="mb-4">
+              <BookOpen className="w-12 h-12 text-zinc-400" />
+            </div>
             <h3 className="text-lg font-bold text-zinc-50 mb-2 group-hover:text-cyan-400 transition-colors">
               Learning & Reading
             </h3>
@@ -114,7 +119,9 @@ export default function Home({
             viewport={{ once: true }}
             className="p-6 bg-zinc-900/50 rounded-xl border border-zinc-700/30 hover:border-cyan-500/30 transition-all duration-300 group text-center"
           >
-            <div className="text-4xl mb-4">🏔️</div>
+            <div className="mb-4">
+              <Mountain className="w-12 h-12 text-zinc-400" />
+            </div>
             <h3 className="text-lg font-bold text-zinc-50 mb-2 group-hover:text-cyan-400 transition-colors">
               Nature & Hiking
             </h3>

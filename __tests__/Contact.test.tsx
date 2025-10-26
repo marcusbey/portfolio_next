@@ -1,4 +1,5 @@
 import "@testing-library/jest-dom";
+import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Contact } from "../components/Contact";
 
@@ -27,7 +28,7 @@ describe("Contact Component", () => {
 
     // Form should be visible
     expect(
-      screen.getByText("Have a question? Drop in your message 👇")
+      screen.getByText("Have a question? Drop in your message")
     ).toBeInTheDocument();
   });
 
@@ -35,7 +36,15 @@ describe("Contact Component", () => {
     render(<Contact />);
 
     // Open form
-    fireEvent.click(screen.getByRole("button"));
+    const toggleButton = screen.getByRole("button");
+    fireEvent.click(toggleButton);
+
+    const messageInput = screen.getByPlaceholderText(
+      "I'd love a compliment from you."
+    );
+    fireEvent.change(messageInput, {
+      target: { value: "This is a valid message with enough content." },
+    });
 
     // Try to submit empty form
     fireEvent.click(screen.getByText("Submit"));
@@ -50,11 +59,18 @@ describe("Contact Component", () => {
     render(<Contact />);
 
     // Open form
-    fireEvent.click(screen.getByRole("button"));
+    const toggleButton = screen.getByRole("button");
+    fireEvent.click(toggleButton);
 
     // Enter invalid email
     const emailInput = screen.getByPlaceholderText("johndoe@xyz.com");
     fireEvent.change(emailInput, { target: { value: "invalid-email" } });
+    const messageInput = screen.getByPlaceholderText(
+      "I'd love a compliment from you."
+    );
+    fireEvent.change(messageInput, {
+      target: { value: "This is a valid message with enough content." },
+    });
 
     // Try to submit
     fireEvent.click(screen.getByText("Submit"));
@@ -70,14 +86,20 @@ describe("Contact Component", () => {
     (global.fetch as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({ message: "Email sent successfully" }),
+        json: () =>
+          Promise.resolve({
+            success: true,
+            message: "Email sent successfully",
+            id: "test-id",
+          }),
       })
     );
 
     render(<Contact />);
 
     // Open form
-    fireEvent.click(screen.getByRole("button"));
+    const toggleButton = screen.getByRole("button");
+    fireEvent.click(toggleButton);
 
     // Fill form
     const emailInput = screen.getByPlaceholderText("johndoe@xyz.com");
@@ -86,7 +108,9 @@ describe("Contact Component", () => {
     );
 
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
-    fireEvent.change(messageInput, { target: { value: "Test message" } });
+    fireEvent.change(messageInput, {
+      target: { value: "This is a test message" },
+    });
 
     // Submit form
     fireEvent.click(screen.getByText("Submit"));
@@ -98,22 +122,30 @@ describe("Contact Component", () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          "Message sent successfully! I'll get back to you soon. 🚀"
+          "Message sent successfully! I'll get back to you soon."
         )
       ).toBeInTheDocument();
     });
 
     // Verify API call
-    expect(global.fetch).toHaveBeenCalledWith("/api/send-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: "test@example.com",
-        message: "Test message",
-      }),
+    expect(global.fetch).toHaveBeenCalledWith(
+      "/api/contact-v2",
+      expect.objectContaining({
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    );
+
+    const fetchCall = (global.fetch as jest.Mock).mock.calls[0];
+    const payload = JSON.parse(fetchCall[1].body);
+    expect(payload).toMatchObject({
+      email: "test@example.com",
+      message: "This is a test message",
+      honeypot: "",
     });
+    expect(typeof payload.timestamp).toBe("number");
   });
 
   it("handles API error", async () => {
@@ -128,7 +160,8 @@ describe("Contact Component", () => {
     render(<Contact />);
 
     // Open form
-    fireEvent.click(screen.getByRole("button"));
+    const toggleButton = screen.getByRole("button");
+    fireEvent.click(toggleButton);
 
     // Fill form
     const emailInput = screen.getByPlaceholderText("johndoe@xyz.com");
@@ -137,7 +170,9 @@ describe("Contact Component", () => {
     );
 
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
-    fireEvent.change(messageInput, { target: { value: "Test message" } });
+    fireEvent.change(messageInput, {
+      target: { value: "This is a test message" },
+    });
 
     // Submit form
     fireEvent.click(screen.getByText("Submit"));
@@ -145,7 +180,9 @@ describe("Contact Component", () => {
     // Check error message
     await waitFor(() => {
       expect(
-        screen.getByText("Failed to send message. Please try again later.")
+        screen.getByText((content) =>
+          content.includes("Failed to send message")
+        )
       ).toBeInTheDocument();
     });
   });
@@ -154,7 +191,8 @@ describe("Contact Component", () => {
     render(<Contact />);
 
     // Open form
-    fireEvent.click(screen.getByRole("button"));
+    const toggleButton = screen.getByRole("button");
+    fireEvent.click(toggleButton);
 
     // Fill form
     const emailInput = screen.getByPlaceholderText("johndoe@xyz.com");
@@ -163,13 +201,15 @@ describe("Contact Component", () => {
     );
 
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
-    fireEvent.change(messageInput, { target: { value: "Test message" } });
+    fireEvent.change(messageInput, {
+      target: { value: "This is a test message" },
+    });
 
     // Close form
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(toggleButton);
 
     // Reopen form
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(toggleButton);
 
     // Check if form is reset
     expect(screen.getByPlaceholderText("johndoe@xyz.com")).toHaveValue("");
